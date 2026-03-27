@@ -101,21 +101,23 @@
 
 ---
 
-## 👨‍👩‍👧 Módulo 5: GUARDIANS 🔄 EN PROGRESO
+## 👨‍👩‍👧 Módulo 5: GUARDIANS ✅ COMPLETADO
 
 ### Endpoints
-- [ ] GET `/api/v1/guardians` - Listar acudientes
-- [ ] GET `/api/v1/guardians/{id}` - Obtener acudiente
-- [ ] POST `/api/v1/guardians` - Crear acudiente
-- [ ] PUT `/api/v1/guardians/{id}` - Actualizar acudiente
-- [ ] DELETE `/api/v1/guardians/{id}` - Eliminar acudiente
+- [x] GET `/api/v1/guardians` - Listar acudientes
+- [x] GET `/api/v1/guardians/{id}` - Obtener acudiente
+- [x] POST `/api/v1/guardians` - Crear acudiente
+- [x] PUT `/api/v1/guardians/{id}` - Actualizar acudiente
+- [x] DELETE `/api/v1/guardians/{id}` - Eliminar acudiente
+- [x] PUT `/api/v1/guardians/{id}/fcm-token` - Actualizar token FCM
 
-### Componentes Existentes
+### Componentes Creados
+- [x] GuardianController ✅
+- [x] GuardianAdapter ✅
 - [x] GuardianService ✅
 - [x] GuardianRequest/Response ✅
-- [ ] GuardianController ❌
-- [ ] GuardianAdapter ❌
-- [ ] Guardian UseCases ❌
+- [x] Guardian UseCases ✅
+- [x] UpdateFcmTokenUseCase ✅
 
 ---
 
