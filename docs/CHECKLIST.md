@@ -121,17 +121,23 @@
 
 ---
 
-## 🔗 Módulo 6: STUDENT-GUARDIAN (Relaciones)
+## 🔗 Módulo 6: STUDENT-GUARDIAN (Relaciones) ✅ COMPLETADO
 
 ### Endpoints
-- [ ] POST `/api/v1/students/{studentId}/guardians` - Agregar acudiente
-- [ ] DELETE `/api/v1/students/{studentId}/guardians/{guardianId}` - Quitar acudiente
-- [ ] GET `/api/v1/students/{studentId}/guardians` - Listar acudientes de estudiante
-- [ ] GET `/api/v1/guardians/{guardianId}/students` - Listar estudiantes de acudiente
+- [x] GET `/api/v1/student-guardians` - Listar todos
+- [x] GET `/api/v1/student-guardians/{id}` - Obtener por ID
+- [x] POST `/api/v1/student-guardians` - Crear relación
+- [x] PUT `/api/v1/student-guardians/{id}` - Actualizar
+- [x] DELETE `/api/v1/student-guardians/{id}` - Eliminar
+- [x] GET `/api/v1/student-guardians/student/{studentId}` - Por estudiante
+- [x] GET `/api/v1/student-guardians/guardian/{guardianId}` - Por acudiente
 
-### Componentes Necesarios
-- [ ] **StudentGuardianController** ❌ No existe
-- [ ] **StudentGuardianService** ❌ No existe
+### Componentes Creados
+- [x] StudentGuardianController ✅
+- [x] StudentGuardianAdapter ✅
+- [x] StudentGuardianService ✅
+- [x] StudentGuardianRequest/Response ✅
+- [x] StudentGuardian UseCases ✅
 
 ---
 
