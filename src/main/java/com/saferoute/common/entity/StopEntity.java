@@ -32,7 +32,7 @@ public class StopEntity {
     @Column(nullable = false)
     private Integer orderNum;
 
-    @Column(nullable = false, columnDefinition = "geometry(Point,4326)")
+    @Column(nullable = false, columnDefinition = "GEOGRAPHY(POINT,4326)")
     private Point location;
 
     @Column(name = "arrival_time")

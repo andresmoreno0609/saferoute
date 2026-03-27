@@ -141,28 +141,28 @@
 
 ---
 
-## 🛣️ Módulo 7: ROUTES
+## 🛣️ Módulo 7: ROUTES ✅ COMPLETADO
 
 ### Endpoints
-- [ ] GET `/api/v1/routes` - Listar rutas
-- [ ] GET `/api/v1/routes/{id}` - Obtener ruta
-- [ ] POST `/api/v1/routes` - Crear ruta
-- [ ] PUT `/api/v1/routes/{id}` - Actualizar ruta
-- [ ] DELETE `/api/v1/routes/{id}` - Eliminar ruta
-- [ ] POST `/api/v1/routes/{id}/start` - Iniciar ruta
-- [ ] POST `/api/v1/routes/{id}/complete` - Completar ruta
-- [ ] POST `/api/v1/routes/{id}/cancel` - Cancelar ruta
-- [ ] GET `/api/v1/routes/{id}/stops` - Listar paradas
+- [x] GET `/api/v1/routes` - Listar rutas
+- [x] GET `/api/v1/routes/{id}` - Obtener ruta
+- [x] POST `/api/v1/routes` - Crear ruta
+- [x] PUT `/api/v1/routes/{id}` - Actualizar ruta
+- [x] DELETE `/api/v1/routes/{id}` - Eliminar ruta
+- [x] POST `/api/v1/routes/{id}/start` - Iniciar ruta
+- [x] POST `/api/v1/routes/{id}/complete` - Completar ruta
+- [x] POST `/api/v1/routes/{id}/cancel` - Cancelar ruta
 
-### Componentes Necesarios
-- [ ] **RouteController** ❌ No existe
-- [ ] **RouteAdapter** ❌ No existe
-- [ ] **RouteService** ❌ No existe
-- [ ] **RouteDtos** ❌ No existe
+### Componentes Creados
+- [x] RouteController ✅
+- [x] RouteAdapter ✅
+- [x] RouteService ✅
+- [x] RouteRequest/Response ✅
+- [x] Route UseCases ✅
 
 ---
 
-## 🛑 Módulo 8: STOPS
+## 🛑 Módulo 8: STOPS 🔄 EN PROGRESO
 
 ### Endpoints
 - [ ] GET `/api/v1/stops` - Listar paradas
@@ -174,10 +174,13 @@
 - [ ] PUT `/api/v1/stops/{id}/dropped-off` - Marcar dejado
 
 ### Componentes Necesarios
-- [ ] **StopController** ❌ No existe
-- [ ] **StopAdapter** ❌ No existe
-- [ ] **StopService** ❌ No existe
-- [ ] **StopDtos** ❌ No existe
+- [ ] StopEntity ✅
+- [ ] StopRepository ✅
+- [ ] Stop DTOs ❌
+- [ ] StopService ❌
+- [ ] StopController ❌
+- [ ] StopAdapter ❌
+- [ ] Stop UseCases ❌
 
 ---
 
