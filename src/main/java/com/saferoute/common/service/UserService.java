@@ -5,6 +5,7 @@ import com.saferoute.common.dto.user.UserResponse;
 import com.saferoute.common.entity.UserEntity;
 import com.saferoute.common.entity.UserEntity.UserStatus;
 import com.saferoute.common.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,22 +18,18 @@ import java.util.UUID;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService extends BaseCrudService<UserEntity, UserRequest, UserResponse, UUID> {
 
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    // ==================== ABSTRACT METHODS ====================
 
     @Override
     protected UserRepository getRepository() {
         return userRepository;
     }
-
-    // ==================== ABSTRACT METHODS ====================
 
     @Override
     protected UserEntity toEntity(UserRequest request) {
