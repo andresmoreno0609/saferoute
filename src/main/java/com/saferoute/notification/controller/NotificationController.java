@@ -3,6 +3,8 @@ package com.saferoute.notification.controller;
 import com.saferoute.common.dto.notification.NotificationRequest;
 import com.saferoute.common.dto.notification.NotificationResponse;
 import com.saferoute.notification.adapter.NotificationAdapter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,21 +18,23 @@ import java.util.UUID;
 
 /**
  * Notification REST Controller.
- * Access: ADMIN (all), GUARDIAN (own), DRIVER (read only)
+ * Maneja las notificaciones push para acudientes.
+ * Acceso: ADMIN (todo), GUARDIAN (propias), DRIVER (crear)
  */
 @RestController
 @RequestMapping("/api/v1/notifications")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "12. Notificaciones", description = "Gestión de notificaciones push para padres y acudientes")
 public class NotificationController {
 
     private final NotificationAdapter adapter;
 
     /**
      * POST /api/v1/notifications
-     * Create notification (usually triggered by system).
-     * Access: ADMIN, DRIVER (system)
+     * Crea una nueva notificación (usualmente disparada por el sistema).
      */
+    @Operation(summary = "Crear notificación", description = "Envía una notificación push a un acudiente (eventos: BOARD, ARRIVAL, DROP, OBSERVATION).")
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<NotificationResponse> create(@Valid @RequestBody NotificationRequest request) {
@@ -40,9 +44,9 @@ public class NotificationController {
 
     /**
      * GET /api/v1/notifications
-     * Get all notifications.
-     * Access: ADMIN only
+     * Lista todas las notificaciones del sistema.
      */
+    @Operation(summary = "Listar notificaciones", description = "Retorna todas las notificaciones. Solo ADMIN.")
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<NotificationResponse>> getAll() {
@@ -52,9 +56,9 @@ public class NotificationController {
 
     /**
      * GET /api/v1/notifications/{id}
-     * Get notification by ID.
-     * Access: ADMIN, GUARDIAN (own)
+     * Obtiene una notificación por su ID.
      */
+    @Operation(summary = "Obtener notificación", description = "Retorna una notificación específica por ID.")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<NotificationResponse> getById(@PathVariable UUID id) {
@@ -64,9 +68,9 @@ public class NotificationController {
 
     /**
      * GET /api/v1/notifications/guardian/{guardianId}
-     * Get notifications by guardian.
-     * Access: ADMIN, GUARDIAN (own)
+     * Obtiene todas las notificaciones de un acudiente.
      */
+    @Operation(summary = "Notificaciones por acudiente", description = "Retorna todas las notificaciones de un acudiente.")
     @GetMapping("/guardian/{guardianId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<List<NotificationResponse>> getByGuardian(@PathVariable UUID guardianId) {
@@ -76,9 +80,9 @@ public class NotificationController {
 
     /**
      * GET /api/v1/notifications/guardian/{guardianId}/unread
-     * Get unread notifications by guardian.
-     * Access: ADMIN, GUARDIAN (own)
+     * Obtiene las notificaciones no leídas de un acudiente.
      */
+    @Operation(summary = "Notificaciones no leídas", description = "Retorna las notificaciones no leídas de un acudiente.")
     @GetMapping("/guardian/{guardianId}/unread")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<List<NotificationResponse>> getUnread(@PathVariable UUID guardianId) {
@@ -88,9 +92,9 @@ public class NotificationController {
 
     /**
      * PUT /api/v1/notifications/{id}/read
-     * Mark notification as read.
-     * Access: ADMIN, GUARDIAN (own)
+     * Marca una notificación como leída.
      */
+    @Operation(summary = "Marcar como leída", description = "Marca una notificación como leída.")
     @PutMapping("/{id}/read")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<NotificationResponse> markAsRead(@PathVariable UUID id) {
@@ -100,9 +104,9 @@ public class NotificationController {
 
     /**
      * PUT /api/v1/notifications/guardian/{guardianId}/read-all
-     * Mark all notifications as read for guardian.
-     * Access: ADMIN, GUARDIAN (own)
+     * Marca todas las notificaciones como leídas.
      */
+    @Operation(summary = "Marcar todas como leídas", description = "Marca todas las notificaciones de un acudiente como leídas.")
     @PutMapping("/guardian/{guardianId}/read-all")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<Integer> markAllAsRead(@PathVariable UUID guardianId) {

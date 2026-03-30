@@ -3,6 +3,8 @@ package com.saferoute.route.controller;
 import com.saferoute.common.dto.route.RouteRequest;
 import com.saferoute.common.dto.route.RouteResponse;
 import com.saferoute.route.adapter.RouteAdapter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,21 +18,23 @@ import java.util.UUID;
 
 /**
  * Route REST Controller.
- * Access: ADMIN (all), DRIVER (assigned routes)
+ * Maneja las operaciones CRUD y gestión de estado de rutas escolares.
+ * Acceso: ADMIN (todo), DRIVER (asignadas), GUARDIAN (lectura)
  */
 @RestController
 @RequestMapping("/api/v1/routes")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "07. Rutas", description = "Gestión de rutas escolares y control de estado")
 public class RouteController {
 
     private final RouteAdapter adapter;
 
     /**
      * GET /api/v1/routes
-     * Get all routes.
-     * Access: ADMIN, DRIVER
+     * Lista todas las rutas registradas.
      */
+    @Operation(summary = "Listar rutas", description = "Retorna todas las rutas. ADMIN y DRIVER.")
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<List<RouteResponse>> getAll() {
@@ -40,9 +44,9 @@ public class RouteController {
 
     /**
      * GET /api/v1/routes/{id}
-     * Get route by ID.
-     * Access: ADMIN, DRIVER, GUARDIAN
+     * Obtiene una ruta por su ID.
      */
+    @Operation(summary = "Obtener ruta", description = "Retorna una ruta específica por ID.")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
     public ResponseEntity<RouteResponse> getById(@PathVariable UUID id) {
@@ -52,9 +56,9 @@ public class RouteController {
 
     /**
      * POST /api/v1/routes
-     * Create a new route.
-     * Access: ADMIN only
+     * Crea una nueva ruta escolar.
      */
+    @Operation(summary = "Crear ruta", description = "Registra una nueva ruta escolar. Solo ADMIN.")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RouteResponse> create(@Valid @RequestBody RouteRequest request) {
@@ -64,9 +68,9 @@ public class RouteController {
 
     /**
      * PUT /api/v1/routes/{id}
-     * Update an existing route.
-     * Access: ADMIN only
+     * Actualiza los datos de una ruta existente.
      */
+    @Operation(summary = "Actualizar ruta", description = "Actualiza los datos de una ruta existente. Solo ADMIN.")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RouteResponse> update(
@@ -78,9 +82,9 @@ public class RouteController {
 
     /**
      * DELETE /api/v1/routes/{id}
-     * Delete a route.
-     * Access: ADMIN only
+     * Elimina una ruta del sistema.
      */
+    @Operation(summary = "Eliminar ruta", description = "Elimina una ruta del sistema. Solo ADMIN.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
@@ -91,9 +95,9 @@ public class RouteController {
 
     /**
      * POST /api/v1/routes/{id}/start
-     * Start a route.
-     * Access: ADMIN, DRIVER
+     * Inicia una ruta (cambia estado a IN_PROGRESS).
      */
+    @Operation(summary = "Iniciar ruta", description = "Marca la ruta como iniciada. El conductor comienza el recorrido.")
     @PostMapping("/{id}/start")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<RouteResponse> start(@PathVariable UUID id) {
@@ -103,9 +107,9 @@ public class RouteController {
 
     /**
      * POST /api/v1/routes/{id}/complete
-     * Complete a route.
-     * Access: ADMIN, DRIVER
+     * Completa una ruta (cambia estado a COMPLETED).
      */
+    @Operation(summary = "Completar ruta", description = "Marca la ruta como completada. Finaliza el recorrido.")
     @PostMapping("/{id}/complete")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<RouteResponse> complete(@PathVariable UUID id) {
@@ -115,9 +119,9 @@ public class RouteController {
 
     /**
      * POST /api/v1/routes/{id}/cancel
-     * Cancel a route.
-     * Access: ADMIN, DRIVER
+     * Cancela una ruta (cambia estado a CANCELLED).
      */
+    @Operation(summary = "Cancelar ruta", description = "Cancela una ruta en curso.")
     @PostMapping("/{id}/cancel")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<RouteResponse> cancel(@PathVariable UUID id) {

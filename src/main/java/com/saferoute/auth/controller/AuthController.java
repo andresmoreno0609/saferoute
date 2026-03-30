@@ -2,6 +2,8 @@ package com.saferoute.auth.controller;
 
 import com.saferoute.auth.adapter.AuthAdapter;
 import com.saferoute.common.dto.auth.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,20 +13,22 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Authentication REST Controller.
- * Handles login, register, refresh token, logout and current user.
+ * Maneja login, registro, refresh token, logout y usuario actual.
  */
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "01. Autenticación", description = "Endpoints para autenticación y gestión de sesión")
 public class AuthController {
 
     private final AuthAdapter authAdapter;
 
     /**
      * POST /api/v1/auth/login
-     * Authenticate user and return tokens.
+     * Autentica al usuario y retorna los tokens JWT.
      */
+    @Operation(summary = "Iniciar sesión", description = "Autentica usuario con email y contraseña. Retorna access token y refresh token.")
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthLoginRequest request) {
         log.info("Login attempt for email: {}", request.email());
@@ -34,8 +38,9 @@ public class AuthController {
 
     /**
      * POST /api/v1/auth/register
-     * Register a new user.
+     * Registra un nuevo usuario en el sistema.
      */
+    @Operation(summary = "Registrar usuario", description = "Crea una nueva cuenta de usuario. Por defecto el rol es GUARDIAN.")
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody AuthRegisterRequest request) {
         log.info("Registration attempt for email: {}", request.email());
@@ -45,8 +50,9 @@ public class AuthController {
 
     /**
      * POST /api/v1/auth/refresh
-     * Refresh access token using refresh token.
+     * Renueva el access token usando el refresh token.
      */
+    @Operation(summary = "Renovar token", description = "Usa el refresh token para obtener un nuevo access token.")
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
         log.info("Token refresh attempt");
@@ -56,8 +62,9 @@ public class AuthController {
 
     /**
      * POST /api/v1/auth/logout
-     * Logout user (invalidate tokens).
+     * Cierra la sesión del usuario actual.
      */
+    @Operation(summary = "Cerrar sesión", description = "Invalida los tokens del usuario actual.")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout() {
         log.info("Logout request");
@@ -67,8 +74,9 @@ public class AuthController {
 
     /**
      * GET /api/v1/auth/me
-     * Get current authenticated user.
+     * Obtiene los datos del usuario autenticado.
      */
+    @Operation(summary = "Usuario actual", description = "Retorna los datos del usuario autenticado actualmente.")
     @GetMapping("/me")
     public ResponseEntity<AuthResponse> getCurrentUser() {
         log.info("Get current user request");

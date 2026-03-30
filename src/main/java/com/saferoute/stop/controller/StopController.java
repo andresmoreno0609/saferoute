@@ -3,6 +3,8 @@ package com.saferoute.stop.controller;
 import com.saferoute.common.dto.stop.StopRequest;
 import com.saferoute.common.dto.stop.StopResponse;
 import com.saferoute.stop.adapter.StopAdapter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,21 +18,23 @@ import java.util.UUID;
 
 /**
  * Stop REST Controller.
- * Access: ADMIN (all), DRIVER (assigned routes), GUARDIAN (read only)
+ * Maneja las paradas de las rutas escolares.
+ * Acceso: ADMIN (todo), DRIVER (asignadas), GUARDIAN (lectura)
  */
 @RestController
 @RequestMapping("/api/v1/stops")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "08. Paradas", description = "Gestión de paradas en las rutas escolares")
 public class StopController {
 
     private final StopAdapter adapter;
 
     /**
      * GET /api/v1/stops
-     * Get all stops.
-     * Access: ADMIN, DRIVER
+     * Lista todas las paradas registradas.
      */
+    @Operation(summary = "Listar paradas", description = "Retorna todas las paradas. ADMIN y DRIVER.")
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<List<StopResponse>> getAll() {
@@ -40,9 +44,9 @@ public class StopController {
 
     /**
      * GET /api/v1/stops/{id}
-     * Get stop by ID.
-     * Access: ADMIN, DRIVER, GUARDIAN
+     * Obtiene una parada por su ID.
      */
+    @Operation(summary = "Obtener parada", description = "Retorna una parada específica por ID.")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
     public ResponseEntity<StopResponse> getById(@PathVariable UUID id) {
@@ -52,9 +56,9 @@ public class StopController {
 
     /**
      * POST /api/v1/stops
-     * Create a new stop.
-     * Access: ADMIN only
+     * Crea una nueva parada en una ruta.
      */
+    @Operation(summary = "Crear parada", description = "Registra una nueva parada en una ruta. Solo ADMIN.")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StopResponse> create(@Valid @RequestBody StopRequest request) {
@@ -64,9 +68,9 @@ public class StopController {
 
     /**
      * PUT /api/v1/stops/{id}
-     * Update an existing stop.
-     * Access: ADMIN only
+     * Actualiza los datos de una parada existente.
      */
+    @Operation(summary = "Actualizar parada", description = "Actualiza los datos de una parada existente. Solo ADMIN.")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StopResponse> update(
@@ -78,9 +82,9 @@ public class StopController {
 
     /**
      * DELETE /api/v1/stops/{id}
-     * Delete a stop.
-     * Access: ADMIN only
+     * Elimina una parada del sistema.
      */
+    @Operation(summary = "Eliminar parada", description = "Elimina una parada del sistema. Solo ADMIN.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
@@ -91,9 +95,9 @@ public class StopController {
 
     /**
      * PUT /api/v1/stops/{id}/picked-up
-     * Mark student as picked up.
-     * Access: ADMIN, DRIVER
+     * Marca al estudiante como recogido.
      */
+    @Operation(summary = "Marcar recogido", description = "Marca al estudiante como recogido en la parada.")
     @PutMapping("/{id}/picked-up")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<StopResponse> markPickedUp(@PathVariable UUID id) {
@@ -103,9 +107,9 @@ public class StopController {
 
     /**
      * PUT /api/v1/stops/{id}/dropped-off
-     * Mark student as dropped off.
-     * Access: ADMIN, DRIVER
+     * Marca al estudiante como dejado en casa.
      */
+    @Operation(summary = "Marcar dejado", description = "Marca al estudiante como dejado en su domicilio.")
     @PutMapping("/{id}/dropped-off")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<StopResponse> markDroppedOff(@PathVariable UUID id) {
@@ -115,9 +119,9 @@ public class StopController {
 
     /**
      * GET /api/v1/stops/route/{routeId}
-     * Get stops by route.
-     * Access: ADMIN, DRIVER, GUARDIAN
+     * Lista todas las paradas de una ruta específica.
      */
+    @Operation(summary = "Paradas por ruta", description = "Retorna todas las paradas de una ruta específica.")
     @GetMapping("/route/{routeId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
     public ResponseEntity<List<StopResponse>> getByRouteId(@PathVariable UUID routeId) {

@@ -3,6 +3,8 @@ package com.saferoute.user.controller;
 import com.saferoute.common.dto.user.UserRequest;
 import com.saferoute.common.dto.user.UserResponse;
 import com.saferoute.user.adapter.UserAdapter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,22 +18,23 @@ import java.util.UUID;
 
 /**
  * User REST Controller.
- * Handles CRUD operations for users.
- * Access: ADMIN only (full access)
+ * Maneja operaciones CRUD para usuarios del sistema.
+ * Acceso: Solo ADMIN
  */
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "02. Usuarios", description = "Gestión de usuarios del sistema (solo ADMIN)")
 public class UserController {
 
     private final UserAdapter userAdapter;
 
     /**
      * GET /api/v1/users
-     * Get all users.
-     * Access: ADMIN only
+     * Lista todos los usuarios del sistema.
      */
+    @Operation(summary = "Listar usuarios", description = "Retorna todos los usuarios registrados. Solo ADMIN.")
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>> getAll() {
@@ -42,9 +45,9 @@ public class UserController {
 
     /**
      * GET /api/v1/users/{id}
-     * Get user by ID.
-     * Access: ADMIN only
+     * Obtiene un usuario por su ID.
      */
+    @Operation(summary = "Obtener usuario", description = "Retorna un usuario específico por ID. Solo ADMIN.")
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
@@ -55,9 +58,9 @@ public class UserController {
 
     /**
      * POST /api/v1/users
-     * Create a new user.
-     * Access: ADMIN only
+     * Crea un nuevo usuario en el sistema.
      */
+    @Operation(summary = "Crear usuario", description = "Crea un nuevo usuario. Solo ADMIN.")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> create(@Valid @RequestBody UserRequest request) {
@@ -68,9 +71,9 @@ public class UserController {
 
     /**
      * PUT /api/v1/users/{id}
-     * Update an existing user.
-     * Access: ADMIN only
+     * Actualiza los datos de un usuario existente.
      */
+    @Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario existente. Solo ADMIN.")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> update(
@@ -83,9 +86,9 @@ public class UserController {
 
     /**
      * DELETE /api/v1/users/{id}
-     * Delete a user (soft delete).
-     * Access: ADMIN only
+     * Elimina un usuario (soft delete).
      */
+    @Operation(summary = "Eliminar usuario", description = "Elimina un usuario del sistema (soft delete). Solo ADMIN.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {

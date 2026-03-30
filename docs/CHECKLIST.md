@@ -17,7 +17,7 @@
 | 11 | **Observations** (Reportes) | ✅ Completo | 🟡 Media |
 | 12 | **Notifications** (FCM) | ✅ Completo | 🟡 Media |
 | 13 | **Security** (Roles, Permisos) | ✅ Completo | 🔴 Alta |
-| 14 | **API Documentation** (Swagger) | 🔴 Por hacer | 🟢 Baja |
+| 14 | **API Documentation** (Swagger) | ✅ Completo | 🟢 Baja |
 
 ---
 
@@ -203,11 +203,12 @@
 
 ---
 
-## 🎯 Próximos Módulos a Implementar
+## 🎯 Próximos Módulos a Implementar (Opcionales)
 
-1. **API Documentation** - Swagger/OpenAPI
-2. **AccessDeniedHandler** - Manejo de accesos denegados
-3. **AuthenticationEntryPoint** - Manejo de auth fallida
+1. **AccessDeniedHandler** - Manejo de accesos denegados
+2. **AuthenticationEntryPoint** - Manejo de auth fallida
+3. **FCM Service** - Integración real con Firebase para push
+4. **Tests** - Cobertura de pruebas unitarias
 
 ---
 
@@ -337,13 +338,31 @@
 
 ---
 
-## 📚 Módulo 14: API DOCUMENTATION
+## 📚 Módulo 14: API DOCUMENTATION ✅ COMPLETADO
 
 ### Configuraciones
-- [ ] **OpenAPI Config** - Configuración de Swagger
-- [ ] **API Info** - Información de la API
-- [ ] **Security Schemes** - Definir JWT en Swagger
-- [ ] **Annotations** - Documentar endpoints
+- [x] **OpenAPI Config** - Configuración de Swagger ✅
+- [x] **API Info** - Información de la API ✅
+- [x] **Security Schemes** - Definir JWT en Swagger ✅
+- [x] **Annotations** - Documentar endpoints ✅
+
+### Documentación por Controller
+- [x] **AuthController** - Autenticación ✅
+- [x] **UserController** - Usuarios ✅
+- [x] **DriverController** - Conductores ✅
+- [x] **StudentController** - Estudiantes ✅
+- [x] **GuardianController** - Acudientes ✅
+- [x] **StudentGuardianController** - Relaciones ✅
+- [x] **RouteController** - Rutas ✅
+- [x] **StopController** - Paradas ✅
+- [x] **GpsPositionController** - GPS Tracking ✅
+- [x] **StudentEventController** - Eventos ✅
+- [x] **ObservationController** - Observaciones ✅
+- [x] **NotificationController** - Notificaciones ✅
+
+### Acceso a Swagger
+- URL: `/swagger-ui/index.html`
+- URL docs: `/v3/api-docs`
 
 ---
 

@@ -3,6 +3,8 @@ package com.saferoute.student.controller;
 import com.saferoute.common.dto.student.StudentRequest;
 import com.saferoute.common.dto.student.StudentResponse;
 import com.saferoute.student.adapter.StudentAdapter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,22 +18,23 @@ import java.util.UUID;
 
 /**
  * Student REST Controller.
- * Handles CRUD operations for students.
- * Access: ADMIN (all), DRIVER (read only), GUARDIAN (own students only)
+ * Maneja operaciones CRUD para estudiantes.
+ * Acceso: ADMIN (todo), DRIVER (lectura), GUARDIAN (sus estudiantes)
  */
 @RestController
 @RequestMapping("/api/v1/students")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "04. Estudiantes", description = "Gestión de estudiantes del sistema")
 public class StudentController {
 
     private final StudentAdapter studentAdapter;
 
     /**
      * GET /api/v1/students
-     * Get all students.
-     * Access: ADMIN, DRIVER
+     * Lista todos los estudiantes registrados.
      */
+    @Operation(summary = "Listar estudiantes", description = "Retorna todos los estudiantes. ADMIN y DRIVER.")
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<List<StudentResponse>> getAll() {
@@ -42,9 +45,9 @@ public class StudentController {
 
     /**
      * GET /api/v1/students/{id}
-     * Get student by ID.
-     * Access: ADMIN, DRIVER, GUARDIAN
+     * Obtiene un estudiante por su ID.
      */
+    @Operation(summary = "Obtener estudiante", description = "Retorna un estudiante específico por ID.")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
     public ResponseEntity<StudentResponse> getById(@PathVariable UUID id) {
@@ -55,9 +58,9 @@ public class StudentController {
 
     /**
      * POST /api/v1/students
-     * Create a new student.
-     * Access: ADMIN only
+     * Crea un nuevo estudiante en el sistema.
      */
+    @Operation(summary = "Crear estudiante", description = "Registra un nuevo estudiante. Solo ADMIN.")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentResponse> create(@Valid @RequestBody StudentRequest request) {
@@ -68,9 +71,9 @@ public class StudentController {
 
     /**
      * PUT /api/v1/students/{id}
-     * Update an existing student.
-     * Access: ADMIN only
+     * Actualiza los datos de un estudiante existente.
      */
+    @Operation(summary = "Actualizar estudiante", description = "Actualiza los datos de un estudiante existente. Solo ADMIN.")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentResponse> update(
@@ -83,9 +86,9 @@ public class StudentController {
 
     /**
      * DELETE /api/v1/students/{id}
-     * Delete a student.
-     * Access: ADMIN only
+     * Elimina un estudiante del sistema.
      */
+    @Operation(summary = "Eliminar estudiante", description = "Elimina un estudiante del sistema. Solo ADMIN.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {

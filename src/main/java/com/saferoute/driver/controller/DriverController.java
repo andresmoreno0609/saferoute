@@ -3,6 +3,8 @@ package com.saferoute.driver.controller;
 import com.saferoute.common.dto.driver.DriverRequest;
 import com.saferoute.common.dto.driver.DriverResponse;
 import com.saferoute.driver.adapter.DriverAdapter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,22 +18,23 @@ import java.util.UUID;
 
 /**
  * Driver REST Controller.
- * Handles CRUD operations for drivers.
- * Access: ADMIN (all), DRIVER (read own), GUARDIAN (read only)
+ * Maneja operaciones CRUD para conductores.
+ * Acceso: ADMIN (todo), DRIVER (lectura propia), GUARDIAN (lectura)
  */
 @RestController
 @RequestMapping("/api/v1/drivers")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "03. Conductores", description = "Gestión de conductores del sistema")
 public class DriverController {
 
     private final DriverAdapter driverAdapter;
 
     /**
      * GET /api/v1/drivers
-     * Get all drivers.
-     * Access: ADMIN only
+     * Lista todos los conductores registrados.
      */
+    @Operation(summary = "Listar conductores", description = "Retorna todos los conductores. Solo ADMIN.")
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<DriverResponse>> getAll() {
@@ -42,9 +45,9 @@ public class DriverController {
 
     /**
      * GET /api/v1/drivers/{id}
-     * Get driver by ID.
-     * Access: ADMIN, DRIVER (own), GUARDIAN
+     * Obtiene un conductor por su ID.
      */
+    @Operation(summary = "Obtener conductor", description = "Retorna un conductor específico por ID.")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
     public ResponseEntity<DriverResponse> getById(@PathVariable UUID id) {
@@ -55,9 +58,9 @@ public class DriverController {
 
     /**
      * POST /api/v1/drivers
-     * Create a new driver.
-     * Access: ADMIN only
+     * Crea un nuevo conductor en el sistema.
      */
+    @Operation(summary = "Crear conductor", description = "Registra un nuevo conductor. Solo ADMIN.")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DriverResponse> create(@Valid @RequestBody DriverRequest request) {
@@ -68,9 +71,9 @@ public class DriverController {
 
     /**
      * PUT /api/v1/drivers/{id}
-     * Update an existing driver.
-     * Access: ADMIN only
+     * Actualiza los datos de un conductor existente.
      */
+    @Operation(summary = "Actualizar conductor", description = "Actualiza los datos de un conductor existente. Solo ADMIN.")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DriverResponse> update(
@@ -83,9 +86,9 @@ public class DriverController {
 
     /**
      * DELETE /api/v1/drivers/{id}
-     * Delete a driver.
-     * Access: ADMIN only
+     * Elimina un conductor del sistema.
      */
+    @Operation(summary = "Eliminar conductor", description = "Elimina un conductor del sistema. Solo ADMIN.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {

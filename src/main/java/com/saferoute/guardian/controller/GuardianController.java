@@ -3,6 +3,8 @@ package com.saferoute.guardian.controller;
 import com.saferoute.common.dto.guardian.GuardianRequest;
 import com.saferoute.common.dto.guardian.GuardianResponse;
 import com.saferoute.guardian.adapter.GuardianAdapter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,22 +18,23 @@ import java.util.UUID;
 
 /**
  * Guardian REST Controller.
- * Handles CRUD operations for guardians.
- * Access: ADMIN (all), GUARDIAN (own), DRIVER (read only)
+ * Maneja operaciones CRUD para acudientes.
+ * Acceso: ADMIN (todo), GUARDIAN (propio), DRIVER (lectura)
  */
 @RestController
 @RequestMapping("/api/v1/guardians")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "05. Acudientes", description = "Gestión de acudientes y tokens FCM")
 public class GuardianController {
 
     private final GuardianAdapter guardianAdapter;
 
     /**
      * GET /api/v1/guardians
-     * Get all guardians.
-     * Access: ADMIN only
+     * Lista todos los acudientes registrados.
      */
+    @Operation(summary = "Listar acudientes", description = "Retorna todos los acudientes. Solo ADMIN.")
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<GuardianResponse>> getAll() {
@@ -42,9 +45,9 @@ public class GuardianController {
 
     /**
      * GET /api/v1/guardians/{id}
-     * Get guardian by ID.
-     * Access: ADMIN, GUARDIAN (own), DRIVER
+     * Obtiene un acudiente por su ID.
      */
+    @Operation(summary = "Obtener acudiente", description = "Retorna un acudiente específico por ID.")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN', 'DRIVER')")
     public ResponseEntity<GuardianResponse> getById(@PathVariable UUID id) {
@@ -55,9 +58,9 @@ public class GuardianController {
 
     /**
      * POST /api/v1/guardians
-     * Create a new guardian.
-     * Access: ADMIN only
+     * Crea un nuevo acudiente en el sistema.
      */
+    @Operation(summary = "Crear acudiente", description = "Registra un nuevo acudiente. Solo ADMIN.")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GuardianResponse> create(@Valid @RequestBody GuardianRequest request) {
@@ -68,9 +71,9 @@ public class GuardianController {
 
     /**
      * PUT /api/v1/guardians/{id}
-     * Update an existing guardian.
-     * Access: ADMIN, GUARDIAN (own)
+     * Actualiza los datos de un acudiente existente.
      */
+    @Operation(summary = "Actualizar acudiente", description = "Actualiza los datos de un acudiente existente.")
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<GuardianResponse> update(
@@ -83,9 +86,9 @@ public class GuardianController {
 
     /**
      * DELETE /api/v1/guardians/{id}
-     * Delete a guardian.
-     * Access: ADMIN only
+     * Elimina un acudiente del sistema.
      */
+    @Operation(summary = "Eliminar acudiente", description = "Elimina un acudiente del sistema. Solo ADMIN.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
@@ -96,9 +99,9 @@ public class GuardianController {
 
     /**
      * PUT /api/v1/guardians/{id}/fcm-token
-     * Update FCM token for push notifications.
-     * Access: ADMIN, GUARDIAN (own)
+     * Actualiza el token FCM para notificaciones push.
      */
+    @Operation(summary = "Actualizar token FCM", description = "Actualiza el token de Firebase Cloud Messaging para recibir notificaciones push.")
     @PutMapping("/{id}/fcm-token")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<GuardianResponse> updateFcmToken(
