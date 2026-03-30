@@ -205,8 +205,8 @@
 
 ## 🎯 Próximos Módulos a Implementar (Opcionales)
 
-1. **AccessDeniedHandler** - Manejo de accesos denegados
-2. **AuthenticationEntryPoint** - Manejo de auth fallida
+1. ✅ **AccessDeniedHandler** - Manejo de accesos denegados (completado)
+2. ✅ **AuthenticationEntryPoint** - Manejo de auth fallida (completado)
 3. **FCM Service** - Integración real con Firebase para push
 4. **Tests** - Cobertura de pruebas unitarias
 
@@ -314,8 +314,8 @@
 - [x] **JwtAuthenticationFilter** - Filtro de JWT ✅
 - [x] **JwtService** - Utilidades JWT ✅
 - [x] **CustomUserDetailsService** - Cargar usuarios ✅
-- [ ] **AccessDeniedHandler** - Manejo de accesos denegados ❌ Pendiente
-- [ ] **AuthenticationEntryPoint** - Manejo de auth fallida ❌ Pendiente
+- [x] **AccessDeniedHandler** - Manejo de accesos denegados ✅
+- [x] **AuthenticationEntryPoint** - Manejo de auth fallida ✅
 
 ### Roles y Permisos
 - [x] ADMIN - Acceso total ✅ (via @PreAuthorize)
