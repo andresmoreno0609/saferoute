@@ -29,7 +29,7 @@ public class GpsPositionEntity {
     @JoinColumn(name = "route_id", nullable = false)
     private RouteEntity route;
 
-    @Column(nullable = false, columnDefinition = "geometry(Point,4326)")
+    @Column(nullable = false, columnDefinition = "GEOGRAPHY(POINT,4326)")
     private Point location;
 
     @Column(nullable = false)

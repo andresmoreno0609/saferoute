@@ -37,7 +37,7 @@ public class StudentEventEntity {
     @Enumerated(EnumType.STRING)
     private EventType eventType;
 
-    @Column(nullable = false, columnDefinition = "geometry(Point,4326)")
+    @Column(nullable = false, columnDefinition = "GEOGRAPHY(POINT,4326)")
     private Point location;
 
     @Column(nullable = false)

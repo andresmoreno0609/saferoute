@@ -162,25 +162,53 @@
 
 ---
 
-## 🛑 Módulo 8: STOPS 🔄 EN PROGRESO
+## 🛑 Módulo 8: STOPS ✅ COMPLETADO
 
 ### Endpoints
-- [ ] GET `/api/v1/stops` - Listar paradas
-- [ ] GET `/api/v1/stops/{id}` - Obtener parada
-- [ ] POST `/api/v1/stops` - Crear parada
-- [ ] PUT `/api/v1/stops/{id}` - Actualizar parada
-- [ ] DELETE `/api/v1/stops/{id}` - Eliminar parada
-- [ ] PUT `/api/v1/stops/{id}/picked-up` - Marcar recogido
-- [ ] PUT `/api/v1/stops/{id}/dropped-off` - Marcar dejado
+- [x] GET `/api/v1/stops` - Listar paradas
+- [x] GET `/api/v1/stops/{id}` - Obtener parada
+- [x] POST `/api/v1/stops` - Crear parada
+- [x] PUT `/api/v1/stops/{id}` - Actualizar parada
+- [x] DELETE `/api/v1/stops/{id}` - Eliminar parada
+- [x] PUT `/api/v1/stops/{id}/picked-up` - Marcar recogida
+- [x] PUT `/api/v1/stops/{id}/dropped-off` - Marcar dejada
+- [x] GET `/api/v1/stops/route/{routeId}` - Por ruta
 
-### Componentes Necesarios
-- [ ] StopEntity ✅
-- [ ] StopRepository ✅
-- [ ] Stop DTOs ❌
-- [ ] StopService ❌
-- [ ] StopController ❌
-- [ ] StopAdapter ❌
-- [ ] Stop UseCases ❌
+### Componentes Creados
+- [x] StopController ✅
+- [x] StopAdapter ✅
+- [x] StopService ✅
+- [x] StopRequest/Response ✅
+- [x] StopEntity ✅ (actualizado a GEOGRAPHY)
+- [x] Stop UseCases ✅
+
+---
+
+## 📊 Resumen de Progreso
+
+| Módulo | Estado |
+|--------|--------|
+| ✅ Auth | Completo |
+| ✅ Users | Completo |
+| ✅ Drivers | Completo |
+| ✅ Students | Completo |
+| ✅ Guardians | Completo |
+| ✅ StudentGuardian | Completo |
+| ✅ Routes | Completo |
+| ✅ Stops | Completo |
+| 🔴 GPS Tracking | Pendiente |
+| 🔴 StudentEvents | Pendiente |
+| 🔴 Observations | Pendiente |
+| 🔴 Notifications | Pendiente |
+
+---
+
+## 🎯 Próximos Módulos a Implementar
+
+1. **GPS Tracking** - Envío de posiciones GPS
+2. **StudentEvents** - BOARD, ARRIVAL, DROP
+3. **Observations** - Reportes de novedades
+4. **Notifications** - Envío de push notifications
 
 ---
 
