@@ -15,7 +15,7 @@
 | 9 | **GPS Tracking** (Posiciones) | ✅ Completo | 🟡 Media |
 | 10 | **StudentEvents** (BOARD, ARRIVAL, DROP) | ✅ Completo | 🟡 Media |
 | 11 | **Observations** (Reportes) | ✅ Completo | 🟡 Media |
-| 12 | **Notifications** (FCM) | 🔴 Por hacer | 🟡 Media |
+| 12 | **Notifications** (FCM) | ✅ Completo | 🟡 Media |
 | 13 | **Security** (Roles, Permisos) | 🔴 Por hacer | 🔴 Alta |
 | 14 | **API Documentation** (Swagger) | 🔴 Por hacer | 🟢 Baja |
 
@@ -199,15 +199,14 @@
 | ✅ GPS Tracking | Completo |
 | ✅ StudentEvents | Completo |
 | ✅ Observations | Completo |
-| 🔴 Notifications | Pendiente |
+| ✅ Notifications | Completo |
 
 ---
 
 ## 🎯 Próximos Módulos a Implementar
 
-1. **Notifications** - Envío de push notifications
-2. **Security** - Roles y permisos
-3. **API Documentation** - Swagger
+1. **Security** - Roles y permisos
+2. **API Documentation** - Swagger
 
 ---
 
@@ -277,19 +276,32 @@
 
 ---
 
-## 🔔 Módulo 12: NOTIFICATIONS
+## 🔔 Módulo 12: NOTIFICATIONS ✅ COMPLETADO
 
 ### Endpoints
-- [ ] GET `/api/v1/notifications` - Listar notificaciones
-- [ ] GET `/api/v1/notifications/{id}` - Obtener notificación
-- [ ] PUT `/api/v1/notifications/{id}/read` - Marcar como leída
-- [ ] PUT `/api/v1/notifications/read-all` - Marcar todas como leídas
+- [x] POST `/api/v1/notifications` - Crear notificación
+- [x] GET `/api/v1/notifications` - Listar notificaciones
+- [x] GET `/api/v1/notifications/{id}` - Obtener notificación
+- [x] GET `/api/v1/notifications/guardian/{guardianId}` - Por acudiente
+- [x] GET `/api/v1/notifications/guardian/{guardianId}/unread` - No leídas
+- [x] PUT `/api/v1/notifications/{id}/read` - Marcar como leída
+- [x] PUT `/api/v1/notifications/guardian/{guardianId}/read-all` - Marcar todas como leídas
 
-### Componentes Necesarios
-- [ ] **NotificationController** ❌ No existe
-- [ ] **NotificationService** ❌ No existe
-- [ ] **NotificationDtos** ❌ No existe
-- [ ] **FcmService** ❌ No existe (Firebase)
+### Componentes Creados
+- [x] **NotificationEntity** ✅ (ya existía)
+- [x] **NotificationRepository** ✅ (ya existía)
+- [x] **NotificationRequest/Response** ✅
+- [x] **NotificationController** ✅
+- [x] **NotificationAdapter** ✅
+- [x] **NotificationService** ✅
+- [x] **CreateNotificationUseCase** ✅
+- [x] **GetAllNotificationsUseCase** ✅
+- [x] **GetNotificationByIdUseCase** ✅
+- [x] **GetNotificationsByGuardianUseCase** ✅
+- [x] **GetUnreadNotificationsUseCase** ✅
+- [x] **MarkAsReadUseCase** ✅
+- [x] **MarkAllAsReadUseCase** ✅
+- [ ] **FcmService** ❌ Pendiente (Firebase - para enviar push)
 
 ---
 
