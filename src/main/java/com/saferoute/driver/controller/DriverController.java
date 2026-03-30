@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.UUID;
 /**
  * Driver REST Controller.
  * Handles CRUD operations for drivers.
+ * Access: ADMIN (all), DRIVER (read own), GUARDIAN (read only)
  */
 @RestController
 @RequestMapping("/api/v1/drivers")
@@ -28,8 +30,10 @@ public class DriverController {
     /**
      * GET /api/v1/drivers
      * Get all drivers.
+     * Access: ADMIN only
      */
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<DriverResponse>> getAll() {
         log.info("GET /api/v1/drivers - Fetching all drivers");
         List<DriverResponse> drivers = driverAdapter.getAll();
@@ -39,8 +43,10 @@ public class DriverController {
     /**
      * GET /api/v1/drivers/{id}
      * Get driver by ID.
+     * Access: ADMIN, DRIVER (own), GUARDIAN
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
     public ResponseEntity<DriverResponse> getById(@PathVariable UUID id) {
         log.info("GET /api/v1/drivers/{} - Fetching driver by id", id);
         DriverResponse driver = driverAdapter.getById(id);
@@ -50,8 +56,10 @@ public class DriverController {
     /**
      * POST /api/v1/drivers
      * Create a new driver.
+     * Access: ADMIN only
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DriverResponse> create(@Valid @RequestBody DriverRequest request) {
         log.info("POST /api/v1/drivers - Creating new driver");
         DriverResponse driver = driverAdapter.create(request);
@@ -61,8 +69,10 @@ public class DriverController {
     /**
      * PUT /api/v1/drivers/{id}
      * Update an existing driver.
+     * Access: ADMIN only
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DriverResponse> update(
             @PathVariable UUID id,
             @Valid @RequestBody DriverRequest request) {
@@ -74,8 +84,10 @@ public class DriverController {
     /**
      * DELETE /api/v1/drivers/{id}
      * Delete a driver.
+     * Access: ADMIN only
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         log.info("DELETE /api/v1/drivers/{} - Deleting driver", id);
         driverAdapter.delete(id);

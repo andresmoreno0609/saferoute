@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.UUID;
 /**
  * User REST Controller.
  * Handles CRUD operations for users.
+ * Access: ADMIN only (full access)
  */
 @RestController
 @RequestMapping("/api/v1/users")
@@ -28,8 +30,10 @@ public class UserController {
     /**
      * GET /api/v1/users
      * Get all users.
+     * Access: ADMIN only
      */
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>> getAll() {
         log.info("GET /api/v1/users - Fetching all users");
         List<UserResponse> users = userAdapter.getAll();
@@ -39,8 +43,10 @@ public class UserController {
     /**
      * GET /api/v1/users/{id}
      * Get user by ID.
+     * Access: ADMIN only
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
         log.info("GET /api/v1/users/{} - Fetching user by id", id);
         UserResponse user = userAdapter.getById(id);
@@ -50,8 +56,10 @@ public class UserController {
     /**
      * POST /api/v1/users
      * Create a new user.
+     * Access: ADMIN only
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> create(@Valid @RequestBody UserRequest request) {
         log.info("POST /api/v1/users - Creating new user");
         UserResponse user = userAdapter.create(request);
@@ -61,8 +69,10 @@ public class UserController {
     /**
      * PUT /api/v1/users/{id}
      * Update an existing user.
+     * Access: ADMIN only
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> update(
             @PathVariable UUID id,
             @Valid @RequestBody UserRequest request) {
@@ -74,8 +84,10 @@ public class UserController {
     /**
      * DELETE /api/v1/users/{id}
      * Delete a user (soft delete).
+     * Access: ADMIN only
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         log.info("DELETE /api/v1/users/{} - Deleting user", id);
         userAdapter.delete(id);

@@ -16,7 +16,7 @@
 | 10 | **StudentEvents** (BOARD, ARRIVAL, DROP) | ✅ Completo | 🟡 Media |
 | 11 | **Observations** (Reportes) | ✅ Completo | 🟡 Media |
 | 12 | **Notifications** (FCM) | ✅ Completo | 🟡 Media |
-| 13 | **Security** (Roles, Permisos) | 🔴 Por hacer | 🔴 Alta |
+| 13 | **Security** (Roles, Permisos) | ✅ Completo | 🔴 Alta |
 | 14 | **API Documentation** (Swagger) | 🔴 Por hacer | 🟢 Baja |
 
 ---
@@ -205,8 +205,9 @@
 
 ## 🎯 Próximos Módulos a Implementar
 
-1. **Security** - Roles y permisos
-2. **API Documentation** - Swagger
+1. **API Documentation** - Swagger/OpenAPI
+2. **AccessDeniedHandler** - Manejo de accesos denegados
+3. **AuthenticationEntryPoint** - Manejo de auth fallida
 
 ---
 
@@ -305,20 +306,34 @@
 
 ---
 
-## 🔒 Módulo 13: SECURITY
+## 🔒 Módulo 13: SECURITY ✅ COMPLETADO
 
 ### Configuraciones
-- [ ] **SecurityConfig** - Configuración de Spring Security
-- [ ] **JwtAuthenticationFilter** - Filtro de JWT
-- [ ] **JwtService** - Utilidades JWT
-- [ ] **CustomUserDetailsService** - Cargar usuarios
-- [ ] **AccessDeniedHandler** - Manejo de accesos denegados
-- [ ] **AuthenticationEntryPoint** - Manejo de auth fallida
+- [x] **SecurityConfig** - Configuración de Spring Security ✅
+- [x] **JwtAuthenticationFilter** - Filtro de JWT ✅
+- [x] **JwtService** - Utilidades JWT ✅
+- [x] **CustomUserDetailsService** - Cargar usuarios ✅
+- [ ] **AccessDeniedHandler** - Manejo de accesos denegados ❌ Pendiente
+- [ ] **AuthenticationEntryPoint** - Manejo de auth fallida ❌ Pendiente
 
 ### Roles y Permisos
-- [ ] ADMIN - Acceso total
-- [ ] DRIVER - Rutas, GPS, eventos
-- [ ] GUARDIAN - Solo lectura de sus estudiantes
+- [x] ADMIN - Acceso total ✅ (via @PreAuthorize)
+- [x] DRIVER - Rutas, GPS, eventos ✅ (via @PreAuthorize)
+- [x] GUARDIAN - Solo lectura de sus estudiantes ✅ (via @PreAuthorize)
+
+### Control de Acceso por Rol
+| Recurso | ADMIN | DRIVER | GUARDIAN |
+|---------|-------|--------|----------|
+| Users | CRUD | - | - |
+| Drivers | CRUD | Read | Read |
+| Students | CRUD | Read | Read (own) |
+| Guardians | CRUD | Read | Own |
+| Routes | CRUD | Asignadas | Read |
+| Stops | CRUD | Asignadas | Read |
+| GPS | CRUD | Propias | Read |
+| Events | CRUD | Propias | Read |
+| Observations | CRUD | Propias | Read |
+| Notifications | CRUD | Create | Own |
 
 ---
 

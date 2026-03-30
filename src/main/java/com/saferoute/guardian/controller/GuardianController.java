@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.UUID;
 /**
  * Guardian REST Controller.
  * Handles CRUD operations for guardians.
+ * Access: ADMIN (all), GUARDIAN (own), DRIVER (read only)
  */
 @RestController
 @RequestMapping("/api/v1/guardians")
@@ -28,8 +30,10 @@ public class GuardianController {
     /**
      * GET /api/v1/guardians
      * Get all guardians.
+     * Access: ADMIN only
      */
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<GuardianResponse>> getAll() {
         log.info("GET /api/v1/guardians - Fetching all guardians");
         List<GuardianResponse> guardians = guardianAdapter.getAll();
@@ -39,8 +43,10 @@ public class GuardianController {
     /**
      * GET /api/v1/guardians/{id}
      * Get guardian by ID.
+     * Access: ADMIN, GUARDIAN (own), DRIVER
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN', 'DRIVER')")
     public ResponseEntity<GuardianResponse> getById(@PathVariable UUID id) {
         log.info("GET /api/v1/guardians/{} - Fetching guardian by id", id);
         GuardianResponse guardian = guardianAdapter.getById(id);
@@ -50,8 +56,10 @@ public class GuardianController {
     /**
      * POST /api/v1/guardians
      * Create a new guardian.
+     * Access: ADMIN only
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GuardianResponse> create(@Valid @RequestBody GuardianRequest request) {
         log.info("POST /api/v1/guardians - Creating new guardian");
         GuardianResponse guardian = guardianAdapter.create(request);
@@ -61,8 +69,10 @@ public class GuardianController {
     /**
      * PUT /api/v1/guardians/{id}
      * Update an existing guardian.
+     * Access: ADMIN, GUARDIAN (own)
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<GuardianResponse> update(
             @PathVariable UUID id,
             @Valid @RequestBody GuardianRequest request) {
@@ -74,8 +84,10 @@ public class GuardianController {
     /**
      * DELETE /api/v1/guardians/{id}
      * Delete a guardian.
+     * Access: ADMIN only
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         log.info("DELETE /api/v1/guardians/{} - Deleting guardian", id);
         guardianAdapter.delete(id);
@@ -85,8 +97,10 @@ public class GuardianController {
     /**
      * PUT /api/v1/guardians/{id}/fcm-token
      * Update FCM token for push notifications.
+     * Access: ADMIN, GUARDIAN (own)
      */
     @PutMapping("/{id}/fcm-token")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<GuardianResponse> updateFcmToken(
             @PathVariable UUID id,
             @RequestBody FcmTokenRequest request) {
