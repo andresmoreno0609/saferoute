@@ -13,6 +13,8 @@ public record ObservationRequest(
     @NotNull(message = "El ID del conductor es obligatorio")
     UUID driverId,
 
+    UUID routeId,
+
     @NotBlank(message = "La descripción es obligatoria")
     String description,
 

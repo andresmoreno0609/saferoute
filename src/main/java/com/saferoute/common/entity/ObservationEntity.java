@@ -27,6 +27,10 @@ public class ObservationEntity {
     @JoinColumn(name = "driver_id", nullable = false)
     private DriverEntity driver;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_id")
+    private RouteEntity route;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
