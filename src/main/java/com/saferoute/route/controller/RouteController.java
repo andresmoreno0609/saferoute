@@ -2,6 +2,8 @@ package com.saferoute.route.controller;
 
 import com.saferoute.common.dto.route.RouteRequest;
 import com.saferoute.common.dto.route.RouteResponse;
+import com.saferoute.common.service.RouteAnalyticsService;
+import com.saferoute.common.service.TrackingAnalyticsService;
 import com.saferoute.route.adapter.RouteAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -29,6 +32,8 @@ import java.util.UUID;
 public class RouteController {
 
     private final RouteAdapter adapter;
+    private final RouteAnalyticsService routeAnalyticsService;
+    private final TrackingAnalyticsService trackingAnalyticsService;
 
     /**
      * GET /api/v1/routes
@@ -127,5 +132,94 @@ public class RouteController {
     public ResponseEntity<RouteResponse> cancel(@PathVariable UUID id) {
         log.info("POST /api/v1/routes/{}/cancel", id);
         return ResponseEntity.ok(adapter.cancelRoute(id));
+    }
+
+    /**
+     * GET /api/v1/routes/{id}/distance
+     * Obtiene la distancia total de la ruta.
+     */
+    @Operation(summary = "Distancia total", description = "Retorna la distancia total de la ruta en metros.")
+    @GetMapping("/{id}/distance")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
+    public ResponseEntity<Map<String, Object>> getDistance(@PathVariable UUID id) {
+        log.info("GET /api/v1/routes/{}/distance", id);
+        var distance = routeAnalyticsService.calculateTotalDistance(id);
+        return ResponseEntity.ok(Map.of(
+                "routeId", id,
+                "distanceMeters", distance,
+                "distanceKm", distance.doubleValue() / 1000.0
+        ));
+    }
+
+    /**
+     * GET /api/v1/routes/{id}/estimated-time
+     * Obtiene el tiempo estimado de la ruta.
+     */
+    @Operation(summary = "Tiempo estimado", description = "Retorna el tiempo estimado de la ruta en minutos.")
+    @GetMapping("/{id}/estimated-time")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
+    public ResponseEntity<Map<String, Object>> getEstimatedTime(@PathVariable UUID id) {
+        log.info("GET /api/v1/routes/{}/estimated-time", id);
+        Integer duration = routeAnalyticsService.estimateDuration(id);
+        return ResponseEntity.ok(Map.of(
+                "routeId", id,
+                "estimatedMinutes", duration,
+                "estimatedHours", duration.doubleValue() / 60.0
+        ));
+    }
+
+    /**
+     * GET /api/v1/routes/{id}/statistics
+     * Obtiene estadísticas completas de la ruta.
+     */
+    @Operation(summary = "Estadísticas de ruta", description = "Retorna estadísticas completas de la ruta (distancia, tiempo, paradas).")
+    @GetMapping("/{id}/statistics")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
+    public ResponseEntity<Map<String, Object>> getStatistics(@PathVariable UUID id) {
+        log.info("GET /api/v1/routes/{}/statistics", id);
+        var routeStats = routeAnalyticsService.getRouteStatistics(id);
+        var trackingStats = trackingAnalyticsService.getTrackingStatistics(id);
+        
+        routeStats.putAll(trackingStats);
+        return ResponseEntity.ok(routeStats);
+    }
+
+    /**
+     * GET /api/v1/routes/{id}/trajectory
+     * Obtiene la trayectoria del autobús.
+     */
+    @Operation(summary = "Trayectoria", description = "Retorna la línea de trayectoria del autobús.")
+    @GetMapping("/{id}/trajectory")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
+    public ResponseEntity<Map<String, Object>> getTrajectory(@PathVariable UUID id) {
+        log.info("GET /api/v1/routes/{}/trajectory", id);
+        var trajectory = trackingAnalyticsService.getRouteTrajectory(id);
+        return ResponseEntity.ok(trajectory);
+    }
+
+    /**
+     * GET /api/v1/routes/{id}/current-position
+     * Obtiene la posición actual del autobús.
+     */
+    @Operation(summary = "Posición actual", description = "Retorna la última posición conocida del autobús.")
+    @GetMapping("/{id}/current-position")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'GUARDIAN')")
+    public ResponseEntity<Map<String, Object>> getCurrentPosition(@PathVariable UUID id) {
+        log.info("GET /api/v1/routes/{}/current-position", id);
+        var position = trackingAnalyticsService.getCurrentPosition(id);
+        return ResponseEntity.ok(position);
+    }
+
+    /**
+     * GET /api/v1/extensions/status
+     * Verifica las extensiones espaciales disponibles.
+     */
+    @Operation(summary = "Estado de extensiones", description = "Retorna el estado de las extensiones espaciales (PostGIS, pgRouting, MobilityDB).")
+    @GetMapping("/extensions/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, Boolean>> getExtensionsStatus() {
+        log.info("GET /api/v1/routes/extensions/status");
+        var extensions = trackingAnalyticsService.getAvailableExtensions();
+        return ResponseEntity.ok(extensions);
     }
 }

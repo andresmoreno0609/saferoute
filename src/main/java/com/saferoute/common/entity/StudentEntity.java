@@ -36,6 +36,13 @@ public class StudentEntity {
     @Column(name = "school_location", columnDefinition = "GEOGRAPHY(POINT,4326)")
     private Point schoolLocation;
 
+    @Column(name = "address_geocoded")
+    @Builder.Default
+    private Boolean addressGeocoded = false;
+
+    @Column(name = "geocode_error", length = 500)
+    private String geocodeError;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

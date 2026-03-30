@@ -3,6 +3,7 @@ package com.saferoute.common.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -43,6 +44,13 @@ public class RouteEntity {
 
     @Column(columnDefinition = "TEXT")
     private String notes;
+
+    @Column(name = "total_distance", precision = 10, scale = 2)
+    @Builder.Default
+    private BigDecimal totalDistance = BigDecimal.ZERO;
+
+    @Column(name = "estimated_duration")
+    private Integer estimatedDuration;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

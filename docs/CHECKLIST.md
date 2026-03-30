@@ -18,6 +18,7 @@
 | 12 | **Notifications** (FCM) | ✅ Completo | 🟡 Media |
 | 13 | **Security** (Roles, Permisos) | ✅ Completo | 🔴 Alta |
 | 14 | **API Documentation** (Swagger) | ✅ Completo | 🟢 Baja |
+| 15 | **Extensiones Espaciales** (pgRouting, MobilityDB, Geocoder) | ✅ Completo | 🟡 Media |
 
 ---
 
@@ -207,8 +208,9 @@
 
 1. ✅ **AccessDeniedHandler** - Manejo de accesos denegados (completado)
 2. ✅ **AuthenticationEntryPoint** - Manejo de auth fallida (completado)
-3. **FCM Service** - Integración real con Firebase para push
-4. **Tests** - Cobertura de pruebas unitarias
+3. ✅ **Extensiones Espaciales** - pgRouting, MobilityDB, Geocoder (completado)
+4. **FCM Service** - Integración real con Firebase para push
+5. **Tests** - Cobertura de pruebas unitarias
 
 ---
 
@@ -363,6 +365,41 @@
 ### Acceso a Swagger
 - URL: `/swagger-ui/index.html`
 - URL docs: `/v3/api-docs`
+
+---
+
+## 🚀 Módulo 15: EXTENSIONES ESPACIALES ✅ COMPLETADO
+
+### Extensiones PostgreSQL/PostGIS
+- [x] **pgRouting** - Rutas optimizadas ✅
+- [x] **MobilityDB** - Tracking avanzado ✅
+- [x] **PostGIS TIGER Geocoder** - Geocodificación ✅
+
+### Nuevos Servicios
+- [x] **RouteAnalyticsService** - Análisis de rutas ✅
+- [x] **TrackingAnalyticsService** - Análisis de tracking ✅
+- [x] **GeocodingService** - Geocodificación de direcciones ✅
+
+### Nuevos Endpoints (Rutas)
+- [x] `GET /api/v1/routes/{id}/distance` - Distancia total
+- [x] `GET /api/v1/routes/{id}/estimated-time` - Tiempo estimado
+- [x] `GET /api/v1/routes/{id}/statistics` - Estadísticas completas
+- [x] `GET /api/v1/routes/{id}/trajectory` - Trayectoria
+- [x] `GET /api/v1/routes/{id}/current-position` - Posición actual
+- [x] `GET /api/v1/routes/extensions/status` - Estado de extensiones
+
+### Entidades Actualizadas
+- [x] **RouteEntity** - Agregados: totalDistance, estimatedDuration
+- [x] **StudentEntity** - Agregados: addressGeocoded, geocodeError
+
+### SQL para habilitar extensiones
+```sql
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS pgrouting;
+CREATE EXTENSION IF NOT EXISTS mobilitydb;
+CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
+CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+```
 
 ---
 
