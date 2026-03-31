@@ -1,6 +1,7 @@
 package com.saferoute.common.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -43,6 +44,35 @@ public class GlobalExceptionHandler {
         log.warn("Validation error: {}", errors);
         
         return ResponseEntity.badRequest().body(response);
+    }
+
+    /**
+     * Maneja errores de integridad de datos (clave duplicada, etc.)
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        String message = "Error de integridad en los datos";
+        String detail = ex.getMostSpecificCause().getMessage();
+        
+        // Detectar errores comunes
+        if (detail.contains("user_id")) {
+            message = "El usuario ya tiene un perfil de conductor asignado";
+        } else if (detail.contains("email")) {
+            message = "El correo electrónico ya está registrado";
+        } else if (detail.contains("unique")) {
+            message = "Ya existe un registro con estos datos";
+        }
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now().toString());
+        response.put("status", HttpStatus.CONFLICT.value());
+        response.put("error", "Data Integrity Violation");
+        response.put("message", message);
+        response.put("detail", detail);
+        
+        log.warn("Data integrity violation: {}", detail);
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     /**
