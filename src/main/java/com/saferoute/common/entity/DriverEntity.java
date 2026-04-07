@@ -3,6 +3,7 @@ package com.saferoute.common.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,42 @@ public class DriverEntity {
 
     @Column(nullable = false, length = 20)
     private String phone;
+
+    @Column(name = "document_number", length = 50)
+    private String documentNumber;
+
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+
+    @Column(name = "address", length = 500)
+    private String address;
+
+    @Column(name = "license_number", length = 50)
+    private String licenseNumber;
+
+    @Column(name = "license_category", length = 10)
+    private String licenseCategory;
+
+    @Column(name = "license_expiration_date")
+    private LocalDate licenseExpirationDate;
+
+    @Column(name = "emergency_contact", length = 255)
+    private String emergencyContact;
+
+    @Column(name = "emergency_phone", length = 20)
+    private String emergencyPhone;
+
+    @Column(name = "years_experience")
+    private Integer yearsExperience;
+
+    @Column(name = "photo_url", length = 500)
+    private String photoUrl;
+
+    @Column(name = "bank_name", length = 50)
+    private String bankName;
+
+    @Column(name = "bank_account", length = 50)
+    private String bankAccount;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id", unique = true)

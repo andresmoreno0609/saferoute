@@ -121,13 +121,32 @@ CREATE INDEX idx_users_status ON users(status);
 | name | VARCHAR(255) | NOT NULL | Nombre del conductor |
 | phone | VARCHAR(20) | NOT NULL | Teléfono de contacto |
 | vehicle_id | UUID | FK → vehicles(id), NULL | Vehículo asignado (1:1) |
+| is_verified | BOOLEAN | NOT NULL, DEFAULT false | Verificado por ADMIN |
 | created_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
 | updated_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de actualización |
+
+**Campos adicionales (información del conductor):**
+
+| Campo | Tipo | Restricciones | Descripción |
+|-------|------|---------------|-------------|
+| document_number | VARCHAR(50) | NULL | Número de identificación |
+| birth_date | DATE | NULL | Fecha de nacimiento |
+| address | VARCHAR(500) | NULL | Dirección de residencia |
+| license_number | VARCHAR(50) | NULL | Número de licencia de conducir |
+| license_category | VARCHAR(10) | NULL | Categoría de licencia (A, B, C, etc.) |
+| license_expiration_date | DATE | NULL | Fecha de vencimiento de licencia |
+| emergency_contact | VARCHAR(255) | NULL | Nombre de contacto de emergencia |
+| emergency_phone | VARCHAR(20) | NULL | Teléfono de emergencia |
+| years_experience | INTEGER | NULL | Años de experiencia como conductor |
+| photo_url | VARCHAR(500) | NULL | URL de foto del conductor |
+| bank_name | VARCHAR(100) | NULL | Nombre del banco para pagos |
+| bank_account | VARCHAR(50) | NULL | Número de cuenta bancaria |
 
 **Índices:**
 ```sql
 CREATE INDEX idx_drivers_user_id ON drivers(user_id);
 CREATE INDEX idx_drivers_vehicle_id ON drivers(vehicle_id);
+CREATE INDEX idx_drivers_is_verified ON drivers(is_verified);
 ```
 
 ---

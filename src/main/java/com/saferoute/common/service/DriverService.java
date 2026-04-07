@@ -54,6 +54,18 @@ public class DriverService {
                 .user(user)
                 .name(request.name())
                 .phone(request.phone())
+                .documentNumber(request.documentNumber())
+                .birthDate(request.birthDate())
+                .address(request.address())
+                .licenseNumber(request.licenseNumber())
+                .licenseCategory(request.licenseCategory())
+                .licenseExpirationDate(request.licenseExpirationDate())
+                .emergencyContact(request.emergencyContact())
+                .emergencyPhone(request.emergencyPhone())
+                .yearsExperience(request.yearsExperience())
+                .photoUrl(request.photoUrl())
+                .bankName(request.bankName())
+                .bankAccount(request.bankAccount())
                 .build();
 
         // If vehicleId is provided, assign vehicle
@@ -82,6 +94,42 @@ public class DriverService {
         }
         if (request.phone() != null) {
             entity.setPhone(request.phone());
+        }
+        if (request.documentNumber() != null) {
+            entity.setDocumentNumber(request.documentNumber());
+        }
+        if (request.birthDate() != null) {
+            entity.setBirthDate(request.birthDate());
+        }
+        if (request.address() != null) {
+            entity.setAddress(request.address());
+        }
+        if (request.licenseNumber() != null) {
+            entity.setLicenseNumber(request.licenseNumber());
+        }
+        if (request.licenseCategory() != null) {
+            entity.setLicenseCategory(request.licenseCategory());
+        }
+        if (request.licenseExpirationDate() != null) {
+            entity.setLicenseExpirationDate(request.licenseExpirationDate());
+        }
+        if (request.emergencyContact() != null) {
+            entity.setEmergencyContact(request.emergencyContact());
+        }
+        if (request.emergencyPhone() != null) {
+            entity.setEmergencyPhone(request.emergencyPhone());
+        }
+        if (request.yearsExperience() != null) {
+            entity.setYearsExperience(request.yearsExperience());
+        }
+        if (request.photoUrl() != null) {
+            entity.setPhotoUrl(request.photoUrl());
+        }
+        if (request.bankName() != null) {
+            entity.setBankName(request.bankName());
+        }
+        if (request.bankAccount() != null) {
+            entity.setBankAccount(request.bankAccount());
         }
         if (request.vehicleId() != null) {
             VehicleEntity vehicle = vehicleRepository.findById(request.vehicleId())
@@ -140,7 +188,11 @@ public class DriverService {
                         doc.getFileUrl(),
                         doc.getStartDate(),
                         doc.getEndDate(),
-                        doc.getIsActive()
+                        doc.getIsActive(),
+                        doc.getIsVerified(),
+                        doc.getVerifiedAt(),
+                        doc.getVerifiedBy(),
+                        doc.getRejectionReason()
                 ))
                 .toList();
 
@@ -149,6 +201,18 @@ public class DriverService {
                 .userId(entity.getUser().getId())
                 .name(entity.getName())
                 .phone(entity.getPhone())
+                .documentNumber(entity.getDocumentNumber())
+                .birthDate(entity.getBirthDate())
+                .address(entity.getAddress())
+                .licenseNumber(entity.getLicenseNumber())
+                .licenseCategory(entity.getLicenseCategory())
+                .licenseExpirationDate(entity.getLicenseExpirationDate())
+                .emergencyContact(entity.getEmergencyContact())
+                .emergencyPhone(entity.getEmergencyPhone())
+                .yearsExperience(entity.getYearsExperience())
+                .photoUrl(entity.getPhotoUrl())
+                .bankName(entity.getBankName())
+                .bankAccount(entity.getBankAccount())
                 .vehicleId(entity.getVehicle() != null ? entity.getVehicle().getId() : null)
                 .vehicle(vehicleResponse)
                 .documents(documents)

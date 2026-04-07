@@ -543,6 +543,18 @@ Authorization: Bearer <TOKEN_JWT>
   "userId": "uuid",
   "name": "string",
   "phone": "string",
+  "documentNumber": "string",
+  "birthDate": "2020-01-01",
+  "address": "string",
+  "licenseNumber": "string",
+  "licenseCategory": "B",
+  "licenseExpirationDate": "2028-01-01",
+  "emergencyContact": "string",
+  "emergencyPhone": "string",
+  "yearsExperience": 5,
+  "photoUrl": "https://...",
+  "bankName": "NEQUI",
+  "bankAccount": "3101234567",
   "vehicleId": "uuid"
 }
 ```
@@ -555,6 +567,18 @@ Authorization: Bearer <TOKEN_JWT>
   "userId": "uuid",
   "name": "string",
   "phone": "string",
+  "documentNumber": "string",
+  "birthDate": "2020-01-01",
+  "address": "string",
+  "licenseNumber": "string",
+  "licenseCategory": "B",
+  "licenseExpirationDate": "2028-01-01",
+  "emergencyContact": "string",
+  "emergencyPhone": "string",
+  "yearsExperience": 5,
+  "photoUrl": "https://...",
+  "bankName": "NEQUI",
+  "bankAccount": "3101234567",
   "vehicleId": "uuid",
   "vehicle": {
     "id": "uuid",
@@ -564,19 +588,9 @@ Authorization: Bearer <TOKEN_JWT>
     "color": "string",
     "capacity": 15
   },
-  "documents": [
-    {
-      "id": "uuid",
-      "documentType": "LICENCIA",
-      "documentNumber": "string",
-      "licenseCategory": "B",
-      "startDate": "2026-01-01",
-      "endDate": "2028-01-01",
-      "isActive": true,
-      "isVerified": false
-    }
-  ],
-  "createdAt": "timestamp"
+  "documents": [],
+  "createdAt": "timestamp",
+  "updatedAt": "timestamp"
 }
 ```
 
@@ -602,6 +616,18 @@ Authorization: Bearer <TOKEN_JWT>
 {
   "name": "string",
   "phone": "string",
+  "documentNumber": "string",
+  "birthDate": "2020-01-01",
+  "address": "string",
+  "licenseNumber": "string",
+  "licenseCategory": "B",
+  "licenseExpirationDate": "2028-01-01",
+  "emergencyContact": "string",
+  "emergencyPhone": "string",
+  "yearsExperience": 5,
+  "photoUrl": "https://...",
+  "bankName": "NEQUI",
+  "bankAccount": "3101234567",
   "vehicleId": "uuid"
 }
 ```
