@@ -1301,6 +1301,92 @@
           }
         }
       ]
+    },
+    {
+      "name": "05. NFC",
+      "item": [
+        {
+          "name": "Asignar NFC a Estudiante",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/students/ID/nfc",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nfcUid\": \"ABC123456789\",\n  \"notes\": \"Tarjeta asignada el 06/04/2026\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Obtener NFC Activo del Estudiante",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/students/ID/nfc",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Desactivar NFC del Estudiante",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/students/ID/nfc",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Ver Historial NFC del Estudiante",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/students/ID/nfc/history",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Escanear NFC",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/nfc/scan",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nfcUid\": \"ABC123456789\"\n}"
+            }
+          }
+        }
+      ]
     }
   ]
 }

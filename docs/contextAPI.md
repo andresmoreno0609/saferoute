@@ -1522,5 +1522,164 @@ O en PostgreSQL/PostGIS:
 - [ ] Documentación interactiva (Swagger/OpenAPI)
 - [ ] Endpoints de métricas
 - [ ] Exportación de datos (CSV, Excel)
-- [ ] Endpoints NFC (ver `contextTasksPending.md`) - Asignar, obtener, historial de NFCs
 - [ ] Webhooks para eventos externos
+
+---
+
+## 10. 📱 NFC (Student NFC)
+
+### POST /api/v1/students/{studentId}/nfc
+
+**Descripción:** Asignar NFC a estudiante
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Request Body:**
+
+```json
+{
+  "nfcUid": "ABC123456789",
+  "notes": "Tarjeta asignada el 06/04/2026"
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "id": "uuid",
+  "studentId": "uuid",
+  "studentName": "María García",
+  "nfcUid": "ABC123456789",
+  "isActive": true,
+  "assignedAt": "2026-04-06T10:00:00",
+  "deactivatedAt": null,
+  "assignedBy": "uuid",
+  "notes": "Tarjeta asignada el 06/04/2026",
+  "createdAt": "2026-04-06T10:00:00",
+  "updatedAt": "2026-04-06T10:00:00"
+}
+```
+
+---
+
+### GET /api/v1/students/{studentId}/nfc
+
+**Descripción:** Obtener NFC activo del estudiante
+
+**Autenticación:** Requiere token + rol ADMIN o DRIVER
+
+**Response (200 OK):**
+
+```json
+{
+  "id": "uuid",
+  "studentId": "uuid",
+  "studentName": "María García",
+  "nfcUid": "ABC123456789",
+  "isActive": true,
+  "assignedAt": "2026-04-06T10:00:00",
+  "deactivatedAt": null,
+  "assignedBy": "uuid",
+  "notes": null,
+  "createdAt": "2026-04-06T10:00:00",
+  "updatedAt": "2026-04-06T10:00:00"
+}
+```
+
+**Response (404 Not Found):** Si el estudiante no tiene NFC activo
+
+---
+
+### DELETE /api/v1/students/{studentId}/nfc
+
+**Descripción:** Desactivar NFC del estudiante
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Response (204 No Content):**
+
+---
+
+### GET /api/v1/students/{studentId}/nfc/history
+
+**Descripción:** Ver historial de NFCs del estudiante
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Response (200 OK):**
+
+```json
+[
+  {
+    "id": "uuid",
+    "studentId": "uuid",
+    "studentName": "María García",
+    "nfcUid": "ABC123456789",
+    "isActive": false,
+    "assignedAt": "2026-01-15T10:00:00",
+    "deactivatedAt": "2026-04-06T10:00:00",
+    "assignedBy": "uuid",
+    "notes": "Primera tarjeta",
+    "createdAt": "2026-01-15T10:00:00",
+    "updatedAt": "2026-04-06T10:00:00"
+  },
+  {
+    "id": "uuid",
+    "studentId": "uuid",
+    "studentName": "María García",
+    "nfcUid": "XYZ987654321",
+    "isActive": true,
+    "assignedAt": "2026-04-06T10:00:00",
+    "deactivatedAt": null,
+    "assignedBy": "uuid",
+    "notes": "Nueva tarjeta",
+    "createdAt": "2026-04-06T10:00:00",
+    "updatedAt": "2026-04-06T10:00:00"
+  }
+]
+```
+
+---
+
+### POST /api/v1/nfc/scan
+
+**Descripción:** Escanear NFC para detectar estudiante
+
+**Autenticación:** Requiere token + rol ADMIN o DRIVER
+
+**Request Body:**
+
+```json
+{
+  "nfcUid": "ABC123456789"
+}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "id": "uuid",
+  "studentId": "uuid",
+  "studentName": "María García",
+  "nfcUid": "ABC123456789",
+  "isActive": true,
+  "assignedAt": "2026-04-06T10:00:00",
+  "deactivatedAt": null,
+  "assignedBy": "uuid",
+  "notes": null,
+  "createdAt": "2026-04-06T10:00:00",
+  "updatedAt": "2026-04-06T10:00:00"
+}
+```
+
+**Response (404 Not Found):** Si el NFC no existe o está inactivo
+
+---
+
+**Reglas de negocio NFC:**
+- Solo UN NFC activo por estudiante
+- Al asignar nuevo NFC, el anterior se inactiva automáticamente
+- NFC UID debe ser único en todo el sistema
+- Al escanear NFC, retorna el estudiante asociado si está activo
