@@ -409,9 +409,9 @@
                 "value": "Bearer {{accessToken}}"
               }
             ],
-            "body": {
+"body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"María García\",\n  \"address\": \"Calle 123, Bogotá, Colombia\",\n  \"latitude\": 4.7110,\n  \"longitude\": -74.0721,\n  \"schoolName\": \"Colegio San José\",\n  \"schoolLatitude\": 4.7200,\n  \"schoolLongitude\": -74.0800\n}"
+              "raw": "{\n  \"name\": \"María García\",\n  \"address\": \"Calle 123, Bogotá, Colombia\",\n  \"homeLatitude\": 4.7110,\n  \"homeLongitude\": -74.0721,\n  \"schoolName\": \"Colegio San José\",\n  \"schoolLatitude\": 4.7200,\n  \"schoolLongitude\": -74.0800,\n  \"grade\": \"1°\",\n  \"birthDate\": \"2015-05-15\",\n  \"emergencyContact\": \"Juan García\",\n  \"emergencyPhone\": \"+573001234567\",\n  \"medicalInfo\": \"Alergia a frutos secos\",\n  \"studentCode\": \"EST-001\"}"
             }
           }
         },
