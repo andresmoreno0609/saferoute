@@ -58,14 +58,14 @@ public class DriverAvailabilityService {
         }
 
         // Required vehicle documents
-        List<VehicleDocumentService.VehicleDocumentType> requiredVehicleDocs = List.of(
-                VehicleDocumentService.VehicleDocumentType.SOAP,
-                VehicleDocumentService.VehicleDocumentType.SEGURO,
-                VehicleDocumentService.VehicleDocumentType.TECNOMECANICA,
-                VehicleDocumentService.VehicleDocumentType.TARJETA_PROPIEDAD
+        List<com.saferoute.common.entity.VehicleDocumentEntity.VehicleDocumentType> requiredVehicleDocs = List.of(
+                com.saferoute.common.entity.VehicleDocumentEntity.VehicleDocumentType.SOAP,
+                com.saferoute.common.entity.VehicleDocumentEntity.VehicleDocumentType.SEGURO,
+                com.saferoute.common.entity.VehicleDocumentEntity.VehicleDocumentType.TECNOMECANICA,
+                com.saferoute.common.entity.VehicleDocumentEntity.VehicleDocumentType.TARJETA_PROPIEDAD
         );
 
-        for (VehicleDocumentService.VehicleDocumentType docType : requiredVehicleDocs) {
+        for (com.saferoute.common.entity.VehicleDocumentEntity.VehicleDocumentType docType : requiredVehicleDocs) {
             String docName = docType.name();
             documentsRequired.add(docName);
             
