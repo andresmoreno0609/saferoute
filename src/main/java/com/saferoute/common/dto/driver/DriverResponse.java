@@ -1,6 +1,10 @@
 package com.saferoute.common.dto.driver;
 
+import com.saferoute.common.dto.driverdocument.DriverDocumentResponse;
+import com.saferoute.common.dto.vehicle.VehicleResponse;
+
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public record DriverResponse(
@@ -8,9 +12,9 @@ public record DriverResponse(
     UUID userId,
     String name,
     String phone,
-    String vehiclePlate,
-    String vehicleModel,
-    String vehicleColor,
+    UUID vehicleId,
+    VehicleResponse vehicle,
+    List<DriverDocumentResponse> documents,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {
@@ -23,9 +27,9 @@ public record DriverResponse(
         private UUID userId;
         private String name;
         private String phone;
-        private String vehiclePlate;
-        private String vehicleModel;
-        private String vehicleColor;
+        private UUID vehicleId;
+        private VehicleResponse vehicle;
+        private List<DriverDocumentResponse> documents;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
@@ -33,14 +37,14 @@ public record DriverResponse(
         public DriverResponseBuilder userId(UUID userId) { this.userId = userId; return this; }
         public DriverResponseBuilder name(String name) { this.name = name; return this; }
         public DriverResponseBuilder phone(String phone) { this.phone = phone; return this; }
-        public DriverResponseBuilder vehiclePlate(String vehiclePlate) { this.vehiclePlate = vehiclePlate; return this; }
-        public DriverResponseBuilder vehicleModel(String vehicleModel) { this.vehicleModel = vehicleModel; return this; }
-        public DriverResponseBuilder vehicleColor(String vehicleColor) { this.vehicleColor = vehicleColor; return this; }
+        public DriverResponseBuilder vehicleId(UUID vehicleId) { this.vehicleId = vehicleId; return this; }
+        public DriverResponseBuilder vehicle(VehicleResponse vehicle) { this.vehicle = vehicle; return this; }
+        public DriverResponseBuilder documents(List<DriverDocumentResponse> documents) { this.documents = documents; return this; }
         public DriverResponseBuilder createdAt(LocalDateTime createdAt) { this.createdAt = createdAt; return this; }
         public DriverResponseBuilder updatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; return this; }
 
         public DriverResponse build() {
-            return new DriverResponse(id, userId, name, phone, vehiclePlate, vehicleModel, vehicleColor, createdAt, updatedAt);
+            return new DriverResponse(id, userId, name, phone, vehicleId, vehicle, documents, createdAt, updatedAt);
         }
     }
 }

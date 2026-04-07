@@ -26,6 +26,7 @@ public class RouteService {
 
     private final RouteRepository routeRepository;
     private final DriverRepository driverRepository;
+    private final DriverAvailabilityService driverAvailabilityService;
 
     public List<RouteResponse> findAll() {
         return routeRepository.findAll().stream()
@@ -43,6 +44,9 @@ public class RouteService {
     public RouteResponse create(RouteRequest request) {
         DriverEntity driver = driverRepository.findById(request.driverId())
                 .orElseThrow(() -> new DriverNotFoundException("Driver not found with id: " + request.driverId()));
+
+        // Validar disponibilidad del conductor antes de crear la ruta
+        validateDriverAvailability(driver.getId());
 
         RouteEntity entity = RouteEntity.builder()
                 .name(request.name())
@@ -62,6 +66,11 @@ public class RouteService {
         RouteEntity entity = routeRepository.findById(id)
                 .orElseThrow(() -> new RouteNotFoundException("Route not found with id: " + id));
 
+        // Validar disponibilidad si se está cambiando el conductor
+        if (request.driverId() != null && !request.driverId().equals(entity.getDriver().getId())) {
+            validateDriverAvailability(request.driverId());
+        }
+
         if (request.name() != null) {
             entity.setName(request.name());
         }
@@ -71,10 +80,31 @@ public class RouteService {
         if (request.notes() != null) {
             entity.setNotes(request.notes());
         }
+        if (request.driverId() != null) {
+            DriverEntity newDriver = driverRepository.findById(request.driverId())
+                    .orElseThrow(() -> new DriverNotFoundException("Driver not found with id: " + request.driverId()));
+            entity.setDriver(newDriver);
+        }
 
         RouteEntity saved = routeRepository.save(entity);
         log.info("Route updated: {}", id);
         return toResponse(saved);
+    }
+
+    /**
+     * Valida que el conductor pueda trabajar (documentos vigentes).
+     * Lanza excepción si el conductor no está disponible.
+     */
+    private void validateDriverAvailability(UUID driverId) {
+        DriverAvailabilityService.AvailabilityResult result = driverAvailabilityService.checkAvailability(driverId);
+        
+        if (!result.available()) {
+            throw new DriverNotAvailableException(
+                    "Conductor no disponible: " + result.reason() + 
+                    ". Documentos faltantes: " + result.documentsMissing() +
+                    ". Documentos vencidos: " + result.documentsExpired()
+            );
+        }
     }
 
     @Transactional
@@ -93,6 +123,9 @@ public class RouteService {
         if (entity.getStatus() != RouteStatus.PENDING) {
             throw new IllegalStateException("Only pending routes can be started");
         }
+
+        // Validar disponibilidad antes de iniciar la ruta
+        validateDriverAvailability(entity.getDriver().getId());
 
         entity.setStatus(RouteStatus.IN_PROGRESS);
         entity.setStartTime(LocalDateTime.now());
@@ -166,6 +199,12 @@ public class RouteService {
 
     public static class DriverNotFoundException extends RuntimeException {
         public DriverNotFoundException(String message) {
+            super(message);
+        }
+    }
+
+    public static class DriverNotAvailableException extends RuntimeException {
+        public DriverNotAvailableException(String message) {
             super(message);
         }
     }

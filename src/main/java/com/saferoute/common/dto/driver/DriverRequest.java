@@ -13,15 +13,11 @@ public record DriverRequest(
     @Size(max = 20, message = "El teléfono no puede exceder 20 caracteres")
     String phone,
 
-    @jakarta.validation.constraints.NotBlank(message = "La placa del vehículo es obligatoria")
-    @Size(max = 20, message = "La placa no puede exceder 20 caracteres")
-    String vehiclePlate,
-
-    @Size(max = 100, message = "El modelo no puede exceder 100 caracteres")
-    String vehicleModel,
-
-    @Size(max = 50, message = "El color no puede exceder 50 caracteres")
-    String vehicleColor,
+    /**
+     * ID del vehículo asociado al conductor.
+     * El conductor debe tener un vehículo asignado para poder trabajar.
+     */
+    UUID vehicleId,
 
     /**
      * ID del usuario al que se le asignará el perfil de conductor.

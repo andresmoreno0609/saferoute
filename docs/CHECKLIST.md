@@ -19,6 +19,9 @@
 | 13 | **Security** (Roles, Permisos) | ✅ Completo | 🔴 Alta |
 | 14 | **API Documentation** (Swagger) | ✅ Completo | 🟢 Baja |
 | 15 | **Extensiones Espaciales** (pgRouting, MobilityDB, Geocoder) | ✅ Completo | 🟡 Media |
+| 16 | **Vehículos y Documentos** (Vehicle, DriverDocument, VehicleDocument) | 🔄 En Progreso | 🔴 Alta |
+| 17 | **Validación de Documentos** (Disponibilidad en rutas) | ⏳ Pendiente | 🔴 Alta |
+| 18 | **Tests** (Unitarios e Integración) | ⏳ Pendiente | 🟡 Media |
 
 ---
 
@@ -401,10 +404,72 @@ CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
 CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
 ```
 
+## 🚐 Módulo 16: VEHÍCULOS Y DOCUMENTOS 🔄 EN PROGRESO
+
+### Fase 1: Entidades y Repositorios
+- [x] VehicleEntity - Crear entidad con plate única, model, brand, color, capacity
+- [x] VehicleDocumentEntity - Crear con documentType, fileUrl, startDate, endDate (nullable), isActive
+- [x] DriverDocumentEntity - Crear con documentType, documentNumber, licenseCategory (nullable), fileUrl, startDate, endDate (nullable), isActive
+- [x] Modificar DriverEntity - Remover vehiclePlate, vehicleModel, vehicleColor; agregar vehicle_id FK (1:1)
+- [x] VehicleRepository - Crear con findByPlate, findAll
+- [x] VehicleDocumentRepository - Crear con findByVehicleAndType, findActiveByVehicle
+- [x] DriverDocumentRepository - Crear con findByDriverAndType, findActiveByDriver
+
+### Fase 2: DTOs
+- [x] VehicleRequest/Response - Crear DTOs para vehículo
+- [x] VehicleDocumentRequest/Response - Crear DTOs para documentos de vehículo
+- [x] DriverDocumentRequest/Response - Crear DTOs para documentos del conductor
+- [x] Actualizar DriverRequest/Response - Remover campos vehicle, incluir vehicle info y documentos
+
+### Fase 3: Use Cases y Servicios
+- [x] VehicleService - CRUD vehículos
+- [x] VehicleDocumentService - CRUD con lógica de inactivar anterior
+- [x] DriverDocumentService - CRUD documentos conductor con lógica de inactivar
+- [x] DriverAvailabilityService - Lógica de disponibilidad
+- [x] DriverService actualizado - usa vehicleId
+
+### Fase 4: Controladores y Endpoints
+- [x] VehicleController - CRUD /api/v1/vehicles
+- [x] VehicleAdapter - Adapter para vehículos
+- [x] VehicleDocumentController - CRUD /api/v1/vehicles/{id}/documents
+- [x] VehicleDocumentAdapter - Adapter para documentos de vehículo
+- [x] DriverDocumentController - CRUD /api/v1/drivers/{id}/documents
+- [x] DriverDocumentAdapter - Adapter para documentos del conductor
+- [x] DriverController actualizado - incluye endpoint /availability
+
+### Fase 5: Validación en Rutas
+- [x] RouteService actualizado - validación de disponibilidad en create, update y startRoute
+- [x] DriverNotAvailableException - excepción para conductor no disponible
+- [x] Validar documentos obligatorios del vehículo (SOAP, Seguro, Tecno, Tarjeta)
+
+### Fase 6: Documentación
+- [x] Actualizar docs/contextDatabase.md - Nuevas entidades y relaciones
+- [x] Actualizar docs/contextAPI.md - Nuevos endpoints de vehículos y documentos
+- [x] Actualizar docs/SafeRoute-API-Postman.json - Nuevos endpoints y bodies
+
+### Fase 7: Testing
+- [ ] Tests unitarios para DriverAvailabilityService
+- [ ] Tests de integración para Vehicles y Documents
+
+### Reglas de Negocio
+- [ ] 1 conductor = 1 vehículo (1:1)
+- [ ] Solo 1 documento activo por tipo (al crear nuevo → anterior isActive = false)
+- [ ] endDate NULL = sin vencimiento
+- [ ] Conductor disponible = TODOS documentos activos vigentes
+- [ ] Documentos obligatorios vehículo: SOAP, Seguro, Tecno-mecánica, Tarjeta propiedad
+
 ---
 
 ## 📊 Progreso General
 
+```
+Módulo                           Hecho    Total    Porcentaje
+────────────────────────────────────────────────────────────────
+✅ Entidades (originales)         11      11       100%
+✅ Repositorios (originales)      11      11       100%
+✅ DTOs (originales)                8       8       100%
+🔄 Vehículos y Documentos           0      48         0%
+────────────────────────────────────────────────────────────────
 ```
 Módulo              Hecho    Total    Porcentaje
 ─────────────────────────────────────────────────

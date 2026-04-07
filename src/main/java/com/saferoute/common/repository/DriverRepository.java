@@ -13,9 +13,9 @@ public interface DriverRepository extends JpaRepository<DriverEntity, UUID>, Jpa
     
     Optional<DriverEntity> findByUserId(UUID userId);
     
-    Optional<DriverEntity> findByVehiclePlate(String vehiclePlate);
+    Optional<DriverEntity> findByVehicle_Id(UUID vehicleId);
     
-    boolean existsByVehiclePlate(String vehiclePlate);
+    boolean existsByVehicle_Id(UUID vehicleId);
     
     boolean existsByUserId(UUID userId);
 }

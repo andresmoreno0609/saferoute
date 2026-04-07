@@ -543,7 +543,39 @@ Authorization: Bearer <TOKEN_JWT>
   "userId": "uuid",
   "name": "string",
   "phone": "string",
-  "vehiclePlate": "string"
+  "vehicleId": "uuid"
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "id": "uuid",
+  "userId": "uuid",
+  "name": "string",
+  "phone": "string",
+  "vehicleId": "uuid",
+  "vehicle": {
+    "id": "uuid",
+    "plate": "string",
+    "model": "string",
+    "brand": "string",
+    "color": "string",
+    "capacity": 15
+  },
+  "documents": [
+    {
+      "id": "uuid",
+      "documentType": "LICENCIA",
+      "documentNumber": "string",
+      "licenseCategory": "B",
+      "startDate": "2026-01-01",
+      "endDate": "2028-01-01",
+      "isActive": true
+    }
+  ],
+  "createdAt": "timestamp"
 }
 ```
 
@@ -551,7 +583,7 @@ Authorization: Bearer <TOKEN_JWT>
 
 ### GET /api/v1/drivers/{id}
 
-**Descripción:** Obtener conductor
+**Descripción:** Obtener conductor con vehículo y documentos
 
 **Autenticación:** Requiere token
 
@@ -569,13 +601,320 @@ Authorization: Bearer <TOKEN_JWT>
 {
   "name": "string",
   "phone": "string",
-  "vehiclePlate": "string"
+  "vehicleId": "uuid"
 }
 ```
 
 ---
 
-## 7. 🛣️ Routes
+### GET /api/v1/drivers/{id}/documents
+
+**Descripción:** Listar documentos del conductor
+
+**Autenticación:** Requiere token
+
+---
+
+### POST /api/v1/drivers/{id}/documents
+
+**Descripción:** Agregar documento al conductor
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Request Body:**
+
+```json
+{
+  "documentType": "LICENCIA | CEDULA | PASAPORTE | OTRO",
+  "documentNumber": "string",
+  "licenseCategory": "B (solo para LICENCIA)",
+  "fileUrl": "string",
+  "startDate": "2026-01-01",
+  "endDate": "2028-01-01"
+}
+```
+
+**Nota:** Al agregar un documento del mismo tipo, el anterior se inactiva automáticamente (historial).
+
+---
+
+### GET /api/v1/drivers/{id}/availability
+
+**Descripción:** Verificar si el conductor puede trabajar (documentos vigentes)
+
+**Autenticación:** Requiere token
+
+**Response (200 OK):**
+
+```json
+{
+  "available": true,
+  "reason": null,
+  "documentsRequired": [
+    "LICENCIA"
+  ],
+  "documentsMissing": [],
+  "documentsExpired": []
+}
+```
+
+**Response cuando no disponible (200 OK):**
+
+```json
+{
+  "available": false,
+  "reason": "Documentos vencidos o faltantes",
+  "documentsRequired": ["LICENCIA", "SOAP", "SEGURO", "TECNOMECANICA", "TARJETA_PROPIEDAD"],
+  "documentsMissing": ["SOAP", "SEGURO", "TECNOMECANICA"],
+  "documentsExpired": []
+}
+```
+
+---
+
+### DELETE /api/v1/drivers/{id}/documents/{documentId}
+
+**Descripción:** Eliminar documento del conductor (soft delete - marca como inactivo)
+
+**Autenticación:** Requiere token + rol ADMIN
+
+---
+
+### POST /api/v1/drivers/{id}/documents/{documentId}/verify
+
+**Descripción:** Verificar documento del conductor (Admin)
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Request Body:**
+
+```json
+{
+  "verifiedBy": "uuid"
+}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "id": "uuid",
+  "documentType": "LICENCIA",
+  "documentNumber": "12345678",
+  "licenseCategory": "B",
+  "fileUrl": "https://...",
+  "startDate": "2026-01-01",
+  "endDate": "2028-01-01",
+  "isActive": true,
+  "isVerified": true,
+  "verifiedAt": "2026-04-06T10:00:00",
+  "verifiedBy": "uuid",
+  "rejectionReason": null
+}
+```
+
+---
+
+### POST /api/v1/drivers/{id}/documents/{documentId}/reject
+
+**Descripción:** Rechazar documento del conductor (Admin)
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Request Body:**
+
+```json
+{
+  "verifiedBy": "uuid",
+  "reason": "Documento ilegible, datos no coinciden"
+}
+```
+
+---
+
+## 7. 🚐 Vehicles
+
+### GET /api/v1/vehicles
+
+**Descripción:** Listar vehículos
+
+**Autenticación:** Requiere token + rol ADMIN
+
+---
+
+### POST /api/v1/vehicles
+
+**Descripción:** Crear vehículo
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Request Body:**
+
+```json
+{
+  "plate": "string (único)",
+  "model": "string",
+  "brand": "string",
+  "color": "string",
+  "capacity": 15
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "id": "uuid",
+  "plate": "string",
+  "model": "string",
+  "brand": "string",
+  "color": "string",
+  "capacity": 15,
+  "driverId": "uuid | null",
+  "createdAt": "timestamp"
+}
+```
+
+---
+
+### GET /api/v1/vehicles/{id}
+
+**Descripción:** Obtener vehículo
+
+**Autenticación:** Requiere token
+
+---
+
+### PUT /api/v1/vehicles/{id}
+
+**Descripción:** Actualizar vehículo
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Request Body:**
+
+```json
+{
+  "plate": "string",
+  "model": "string",
+  "brand": "string",
+  "color": "string",
+  "capacity": 18
+}
+```
+
+---
+
+### DELETE /api/v1/vehicles/{id}
+
+**Descripción:** Eliminar vehículo
+
+**Autenticación:** Requiere token + rol ADMIN
+
+---
+
+### GET /api/v1/vehicles/{id}/documents
+
+**Descripción:** Listar documentos del vehículo
+
+**Autenticación:** Requiere token
+
+---
+
+### POST /api/v1/vehicles/{id}/documents
+
+**Descripción:** Agregar documento al vehículo
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Request Body:**
+
+```json
+{
+  "documentType": "SOAP | SEGURO | TECNOMECANICA | TARJETA_PROPIEDAD",
+  "fileUrl": "string",
+  "startDate": "2026-01-01",
+  "endDate": "2027-01-01 (null para documentos sin vencimiento)"
+}
+```
+
+**Documentos obligatorios del vehículo:**
+- SOAP
+- SEGURO
+- TECNOMECANICA
+- TARJETA_PROPIEDAD
+
+**Nota:** Al agregar un documento del mismo tipo, el anterior se inactiva automáticamente (historial).
+
+---
+
+### PUT /api/v1/vehicles/{id}/documents/{documentId}
+
+**Descripción:** Actualizar documento del vehículo
+
+**Autenticación:** Requiere token + rol ADMIN
+
+---
+
+### DELETE /api/v1/vehicles/{id}/documents/{documentId}
+
+**Descripción:** Eliminar documento del vehículo (soft delete - marca como inactivo)
+
+**Autenticación:** Requiere token + rol ADMIN
+
+---
+
+### POST /api/v1/vehicles/{id}/documents/{documentId}/verify
+
+**Descripción:** Verificar documento del vehículo (Admin)
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Request Body:**
+
+```json
+{
+  "verifiedBy": "uuid"
+}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "id": "uuid",
+  "documentType": "SOAP",
+  "fileUrl": "https://...",
+  "startDate": "2026-01-01",
+  "endDate": "2027-01-01",
+  "isActive": true,
+  "isVerified": true,
+  "verifiedAt": "2026-04-06T10:00:00",
+  "verifiedBy": "uuid",
+  "rejectionReason": null
+}
+```
+
+---
+
+### POST /api/v1/vehicles/{id}/documents/{documentId}/reject
+
+**Descripción:** Rechazar documento del vehículo (Admin)
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Request Body:**
+
+```json
+{
+  "verifiedBy": "uuid",
+  "reason": "Placa no coincide con el documento"
+}
+```
+
+---
+
+## 8. 🛣️ Routes
 
 ### GET /api/v1/routes
 

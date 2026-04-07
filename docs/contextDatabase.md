@@ -25,7 +25,7 @@
 │ id (PK)         │◄──────│ user_id (FK)    │
 │ email           │       │ name            │
 │ password_hash   │       │ phone           │
-│ name            │       │ vehicle_plate   │
+│ name            │       │ vehicle_id (FK) │
 │ role            │       └─────────────────┘
 │ status          │               │
 │ created_at      │               ▼
@@ -120,16 +120,95 @@ CREATE INDEX idx_users_status ON users(status);
 | user_id | UUID | FK → users(id), UNIQUE, NOT NULL | Referencia al usuario |
 | name | VARCHAR(255) | NOT NULL | Nombre del conductor |
 | phone | VARCHAR(20) | NOT NULL | Teléfono de contacto |
-| vehicle_plate | VARCHAR(20) | NOT NULL | Placa del vehículo |
-| vehicle_model | VARCHAR(100) | NULL | Modelo del vehículo |
-| vehicle_color | VARCHAR(50) | NULL | Color del vehículo |
+| vehicle_id | UUID | FK → vehicles(id), NULL | Vehículo asignado (1:1) |
 | created_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
 | updated_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de actualización |
 
 **Índices:**
 ```sql
 CREATE INDEX idx_drivers_user_id ON drivers(user_id);
-CREATE INDEX idx_drivers_plate ON drivers(vehicle_plate);
+CREATE INDEX idx_drivers_vehicle_id ON drivers(vehicle_id);
+```
+
+---
+
+### 2.2.1 vehicles
+
+**Descripción:** Vehículos del sistema (relación 1:1 con drivers)
+
+| Campo | Tipo | Restricciones | Descripción |
+|-------|------|---------------|-------------|
+| id | UUID | PK, NOT NULL | Identificador único |
+| plate | VARCHAR(20) | UNIQUE, NOT NULL | Placa del vehículo |
+| model | VARCHAR(100) | NULL | Modelo |
+| brand | VARCHAR(100) | NULL | Marca |
+| color | VARCHAR(50) | NULL | Color |
+| capacity | INTEGER | NULL | Capacidad de pasajeros |
+| created_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
+| updated_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de actualización |
+
+**Índices:**
+```sql
+CREATE INDEX idx_vehicles_plate ON vehicles(plate);
+CREATE INDEX idx_vehicles_driver ON vehicles(driver_id);
+```
+
+---
+
+### 2.2.2 vehicle_documents
+
+**Descripción:** Documentos de los vehículos (SOAP, Seguro, Tecno-mecánica, Tarjeta propiedad)
+
+| Campo | Tipo | Restricciones | Descripción |
+|-------|------|---------------|-------------|
+| id | UUID | PK, NOT NULL | Identificador único |
+| vehicle_id | UUID | FK → vehicles(id), NOT NULL | Vehículo |
+| document_type | VARCHAR(30) | NOT NULL, CHECK IN ('SOAP', 'SEGURO', 'TECNOMECANICA', 'TARJETA_PROPIEDAD') | Tipo de documento |
+| file_url | VARCHAR(500) | NULL | URL del documento en storage |
+| start_date | DATE | NULL | Fecha inicio vigencia |
+| end_date | DATE | NULL | Fecha fin vigencia (NULL = sin vencimiento) |
+| is_active | BOOLEAN | NOT NULL, DEFAULT true | Documento activo vigente |
+| created_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
+| updated_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de actualización |
+
+**Reglas de negocio:**
+- Solo un documento ACTIVO por tipo (al crear nuevo, anterior se inactiva)
+- end_date NULL = documento sin vencimiento
+
+**Índices:**
+```sql
+CREATE INDEX idx_vehicle_documents_vehicle ON vehicle_documents(vehicle_id);
+CREATE INDEX idx_vehicle_documents_type_active ON vehicle_documents(vehicle_id, document_type, is_active);
+```
+
+---
+
+### 2.2.3 driver_documents
+
+**Descripción:** Documentos del conductor (Cédula, Licencia, Pasaporte, Otros)
+
+| Campo | Tipo | Restricciones | Descripción |
+|-------|------|---------------|-------------|
+| id | UUID | PK, NOT NULL | Identificador único |
+| driver_id | UUID | FK → drivers(id), NOT NULL | Conductor |
+| document_type | VARCHAR(30) | NOT NULL, CHECK IN ('CEDULA', 'LICENCIA', 'PASAPORTE', 'OTRO') | Tipo de documento |
+| document_number | VARCHAR(50) | NULL | Número del documento |
+| license_category | VARCHAR(10) | NULL | Categoría licencia (solo para LICENCIA) |
+| file_url | VARCHAR(500) | NULL | URL del documento en storage |
+| start_date | DATE | NULL | Fecha inicio vigencia |
+| end_date | DATE | NULL | Fecha fin vigencia (NULL = sin vencimiento) |
+| is_active | BOOLEAN | NOT NULL, DEFAULT true | Documento activo vigente |
+| created_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
+| updated_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de actualización |
+
+**Reglas de negocio:**
+- Solo un documento ACTIVO por tipo (al crear nuevo, anterior se inactiva)
+- license_category solo aplica cuando documentType = LICENCIA
+
+**Índices:**
+```sql
+CREATE INDEX idx_driver_documents_driver ON driver_documents(driver_id);
+CREATE INDEX idx_driver_documents_type_active ON driver_documents(driver_id, document_type, is_active);
 ```
 
 ---
@@ -370,6 +449,9 @@ CREATE INDEX idx_notifications_read ON notifications(guardian_id, read_at);
 | Relación | Tipo | Descripción |
 |----------|------|-------------|
 | users → drivers | 1:1 | Cada conductor tiene un usuario |
+| drivers → vehicles | 1:1 | Un conductor tiene un vehículo |
+| vehicles → vehicle_documents | 1:N | Un vehículo tiene muchos documentos |
+| drivers → driver_documents | 1:N | Un conductor tiene muchos documentos |
 | users → guardians | 1:N | Un usuario puede crear varios guardianes |
 | drivers → routes | 1:N | Un conductor puede tener varias rutas |
 | routes → stops | 1:N | Una ruta tiene varias paradas |
@@ -381,7 +463,34 @@ CREATE INDEX idx_notifications_read ON notifications(guardian_id, read_at);
 
 ---
 
-## 4. 🧪 Tipos de Datos PostGIS
+## 4. 📋 Documentos Obligatorios
+
+### 4.1 Documentos del Vehículo (Obligatorios para trabajar)
+
+| Documento | Tipo | Vigencia | Notas |
+|-----------|------|----------|-------|
+| SOAP | vehicle_documents | Fecha fin | Obligatorio |
+| SEGURO | vehicle_documents | Fecha fin | Obligatorio |
+| TECNOMECANICA | vehicle_documents | Fecha fin | Obligatorio |
+| TARJETA_PROPIEDAD | vehicle_documents | NULL (sin vencimiento) | Obligatorio |
+
+### 4.2 Documentos del Conductor (Obligatorios para trabajar)
+
+| Documento | Tipo | Vigencia | Notas |
+|-----------|------|----------|-------|
+| LICENCIA | driver_documents | Fecha fin | Obligatoria |
+| CEDULA | driver_documents | NULL (sin vencimiento) | Recomendada |
+
+### 4.3 Reglas de Disponibilidad
+
+Un conductor puede trabajar (asignarse a rutas) si y solo si:
+1. Tiene un vehículo asignado
+2. Tiene licencia vigente (documento activo con fecha fin >= hoy o NULL)
+3. El vehículo tiene TODOS los documentos obligatorios activos y vigentes
+
+---
+
+## 5. 🧪 Tipos de Datos PostGIS
 
 ### 4.1 Uso de Geography vs Geometry
 
@@ -419,7 +528,7 @@ LIMIT 1;
 
 ---
 
-## 5. 📜 Scripts de Creación
+## 6. 📜 Scripts de Creación
 
 ### 5.1 Esquema Completo
 

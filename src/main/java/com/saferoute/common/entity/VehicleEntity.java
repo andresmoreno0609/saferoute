@@ -4,40 +4,38 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "drivers")
+@Table(name = "vehicles")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DriverEntity {
+public class VehicleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private UserEntity user;
+    @Column(name = "plate", nullable = false, unique = true, length = 20)
+    private String plate;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "model", length = 100)
+    private String model;
 
-    @Column(nullable = false, length = 20)
-    private String phone;
+    @Column(name = "brand", length = 100)
+    private String brand;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_id", unique = true)
-    private VehicleEntity vehicle;
+    @Column(name = "color", length = 50)
+    private String color;
 
-    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<DriverDocumentEntity> documents = new ArrayList<>();
+    @Column(name = "capacity")
+    private Integer capacity;
+
+    @OneToOne(mappedBy = "vehicle", fetch = FetchType.LAZY)
+    private DriverEntity driver;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

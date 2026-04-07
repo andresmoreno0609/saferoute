@@ -2,6 +2,7 @@ package com.saferoute.driver.controller;
 
 import com.saferoute.common.dto.driver.DriverRequest;
 import com.saferoute.common.dto.driver.DriverResponse;
+import com.saferoute.common.service.DriverAvailabilityService;
 import com.saferoute.driver.adapter.DriverAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +30,7 @@ import java.util.UUID;
 public class DriverController {
 
     private final DriverAdapter driverAdapter;
+    private final DriverAvailabilityService driverAvailabilityService;
 
     /**
      * GET /api/v1/drivers
@@ -95,5 +97,18 @@ public class DriverController {
         log.info("DELETE /api/v1/drivers/{} - Deleting driver", id);
         driverAdapter.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * GET /api/v1/drivers/{id}/availability
+     * Verifica si el conductor puede trabajar (documentos vigentes).
+     */
+    @Operation(summary = "Verificar disponibilidad", description = "Retorna si el conductor puede trabajar basado en sus documentos.")
+    @GetMapping("/{id}/availability")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    public ResponseEntity<DriverAvailabilityService.AvailabilityResult> checkAvailability(@PathVariable UUID id) {
+        log.info("GET /api/v1/drivers/{}/availability - Checking driver availability", id);
+        DriverAvailabilityService.AvailabilityResult result = driverAvailabilityService.checkAvailability(id);
+        return ResponseEntity.ok(result);
     }
 }

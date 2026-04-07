@@ -218,7 +218,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Juan Pérez\",\n  \"email\": \"juan@saferoute.com\",\n  \"phone\": \"+573001234567\",\n  \"licenseNumber\": \"ABC123456\"\n}"
+              "raw": "{\n  \"name\": \"Juan Pérez\",\n  \"phone\": \"+573001234567\",\n  \"vehicleId\": \"ID_DEL_VEHICULO\",\n  \"userId\": \"ID_DEL_USUARIO\"\n}"
             }
           }
         },
@@ -252,7 +252,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Juan Pérez Actualizado\",\n  \"email\": \"juan@saferoute.com\",\n  \"phone\": \"+573001234567\",\n  \"licenseNumber\": \"ABC123456\"\n}"
+              "raw": "{\n  \"name\": \"Juan Pérez Actualizado\",\n  \"phone\": \"+573001234567\",\n  \"vehicleId\": \"ID_DEL_VEHICULO\"\n}"
             }
           }
         },
@@ -261,6 +261,108 @@
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/api/v1/drivers/ID",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Agregar Documento al Conductor",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/drivers/ID/documents",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentType\": \"LICENCIA\",\n  \"documentNumber\": \"12345678\",\n  \"licenseCategory\": \"B\",\n  \"fileUrl\": \"https://storage.example.com/license.pdf\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2028-01-01\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Listar Documentos del Conductor",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/drivers/ID/documents",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Verificar Disponibilidad",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/drivers/ID/availability",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Verificar Documento del Conductor",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/drivers/ID/documents/DOC_ID/verify",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verifiedBy\": \"UUID_DEL_ADMIN\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Rechazar Documento del Conductor",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/drivers/ID/documents/DOC_ID/reject",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verifiedBy\": \"UUID_DEL_ADMIN\",\n  \"reason\": \"Documento ilegible\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar Documento del Conductor",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/drivers/ID/documents/DOC_ID",
             "header": [
               {
                 "key": "Authorization",
@@ -984,6 +1086,202 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/routes/extensions/status",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14. Vehículos",
+      "item": [
+        {
+          "name": "Listar Vehículos",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/vehicles",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Crear Vehículo",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/vehicles",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plate\": \"ABC123\",\n  \"model\": \"Toyota Hiace\",\n  \"brand\": \"Toyota\",\n  \"color\": \"Blanco\",\n  \"capacity\": 15\n}"
+            }
+          }
+        },
+        {
+          "name": "Obtener Vehículo",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/vehicles/ID",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Actualizar Vehículo",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/vehicles/ID",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plate\": \"ABC123\",\n  \"model\": \"Toyota Hiace\",\n  \"brand\": \"Toyota\",\n  \"color\": \"Blanco\",\n  \"capacity\": 18\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar Vehículo",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/vehicles/ID",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Agregar Documento al Vehículo",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/vehicles/ID/documents",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentType\": \"SOAP\",\n  \"fileUrl\": \"https://storage.example.com/soap.pdf\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2027-01-01\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Listar Documentos del Vehículo",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/vehicles/ID/documents",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Actualizar Documento del Vehículo",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/vehicles/ID/documents/DOC_ID",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentType\": \"SOAP\",\n  \"fileUrl\": \"https://storage.example.com/soap_new.pdf\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2028-01-01\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Verificar Documento del Vehículo",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/vehicles/ID/documents/DOC_ID/verify",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verifiedBy\": \"UUID_DEL_ADMIN\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Rechazar Documento del Vehículo",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/vehicles/ID/documents/DOC_ID/reject",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verifiedBy\": \"UUID_DEL_ADMIN\",\n  \"reason\": \"Placa no coincide con documento\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar Documento del Vehículo",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/vehicles/ID/documents/DOC_ID",
             "header": [
               {
                 "key": "Authorization",
