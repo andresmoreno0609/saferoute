@@ -244,12 +244,53 @@ CREATE INDEX idx_driver_documents_type_active ON driver_documents(driver_id, doc
 | location | GEOGRAPHY(POINT) | NOT NULL | Ubicación geográfica (POINT) |
 | school_name | VARCHAR(255) | NULL | Nombre del colegio |
 | school_location | GEOGRAPHY(POINT) | NULL | Ubicación del colegio |
+| address_geocoded | BOOLEAN | NOT NULL, DEFAULT false | ¿Dirección geocodificada? |
+| geocode_error | VARCHAR(500) | NULL | Error de geocodificación |
+| birth_date | DATE | NULL | Fecha de nacimiento |
+| grade | VARCHAR(50) | NULL | Grado escolar |
+| emergency_contact | VARCHAR(255) | NULL | Contacto de emergencia |
+| emergency_phone | VARCHAR(20) | NULL | Teléfono de emergencia |
+| medical_info | VARCHAR(1000) | NULL | Info médica (alergias, medicamentos) |
+| photo_url | VARCHAR(500) | NULL | URL de foto |
+| student_code | VARCHAR(50) | NULL | Código interno del estudiante |
 | created_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
 | updated_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de actualización |
 
 **Índices:**
 ```sql
 CREATE INDEX idx_students_location ON students USING GIST(location);
+CREATE INDEX idx_students_student_code ON students(student_code);
+```
+
+---
+
+### 2.3.1 student_nfc
+
+**Descripción:** Tarjetas NFC asignadas a estudiantes (histórico)
+
+| Campo | Tipo | Restricciones | Descripción |
+|-------|------|---------------|-------------|
+| id | UUID | PK, NOT NULL | Identificador único |
+| student_id | UUID | FK → students(id), NOT NULL | Estudiante |
+| nfc_uid | VARCHAR(100) | UNIQUE, NOT NULL | UID de la tarjeta NFC |
+| is_active | BOOLEAN | NOT NULL, DEFAULT true | ¿NFC activo? |
+| assigned_at | TIMESTAMP | NOT NULL | Fecha de asignación |
+| deactivated_at | TIMESTAMP | NULL | Fecha de desactivación |
+| assigned_by | UUID | NULL | Usuario que asignó |
+| notes | VARCHAR(500) | NULL | Notas adicionales |
+| created_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
+| updated_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de actualización |
+
+**Reglas de negocio:**
+- Solo UN NFC activo por estudiante
+- Al asignar nuevo, anterior se inactiva automáticamente
+- Mantiene histórico de todos los NFCs
+
+**Índices:**
+```sql
+CREATE INDEX idx_student_nfc_student ON student_nfc(student_id);
+CREATE INDEX idx_student_nfc_uid ON student_nfc(nfc_uid);
+CREATE INDEX idx_student_nfc_active ON student_nfc(student_id, is_active);
 ```
 
 ---
@@ -476,6 +517,7 @@ CREATE INDEX idx_notifications_read ON notifications(guardian_id, read_at);
 | routes → stops | 1:N | Una ruta tiene varias paradas |
 | students → stops | 1:N | Un estudiante puede estar en varias rutas (diferentes días) |
 | students → guardians | N:M | Relación a través de student_guardians |
+| students → student_nfc | 1:N | Un estudiante puede tener varios NFCs (histórico) |
 | drivers → gps_positions | 1:N | Un conductor tiene muchas posiciones GPS |
 | routes → student_events | 1:N | Una ruta genera muchos eventos |
 | students → observations | 1:N | Un estudiante tiene muchas observaciones |

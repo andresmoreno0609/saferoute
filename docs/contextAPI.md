@@ -378,8 +378,18 @@ Authorization: Bearer <TOKEN_JWT>
 {
   "name": "string",
   "address": "string",
-  "latitude": 0.0,
-  "longitude": 0.0
+  "homeLatitude": 4.7110,
+  "homeLongitude": -74.0721,
+  "schoolName": "string",
+  "schoolLatitude": 4.7200,
+  "schoolLongitude": -74.0800,
+  "grade": "1°",
+  "birthDate": "2015-05-15",
+  "emergencyContact": "string",
+  "emergencyPhone": "string",
+  "medicalInfo": "string",
+  "photoUrl": "string",
+  "studentCode": "string"
 }
 ```
 
@@ -390,11 +400,21 @@ Authorization: Bearer <TOKEN_JWT>
   "id": "uuid",
   "name": "string",
   "address": "string",
-  "location": {
-    "lat": 0.0,
-    "lng": 0.0
-  },
-  "createdAt": "timestamp"
+  "homeLatitude": 4.7110,
+  "homeLongitude": -74.0721,
+  "schoolName": "string",
+  "schoolLatitude": 4.7200,
+  "schoolLongitude": -74.0800,
+  "addressGeocoded": true,
+  "birthDate": "2015-05-15",
+  "grade": "1°",
+  "emergencyContact": "string",
+  "emergencyPhone": "string",
+  "medicalInfo": "string",
+  "photoUrl": "string",
+  "studentCode": "string",
+  "createdAt": "timestamp",
+  "updatedAt": "timestamp"
 }
 ```
 
@@ -1502,4 +1522,5 @@ O en PostgreSQL/PostGIS:
 - [ ] Documentación interactiva (Swagger/OpenAPI)
 - [ ] Endpoints de métricas
 - [ ] Exportación de datos (CSV, Excel)
+- [ ] Endpoints NFC (ver `contextTasksPending.md`) - Asignar, obtener, historial de NFCs
 - [ ] Webhooks para eventos externos

@@ -11,6 +11,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,6 +52,13 @@ public class StudentService {
                 .location(homeLocation)
                 .schoolName(request.schoolName())
                 .schoolLocation(schoolLocation)
+                .grade(request.grade())
+                .birthDate(request.birthDate())
+                .emergencyContact(request.emergencyContact())
+                .emergencyPhone(request.emergencyPhone())
+                .medicalInfo(request.medicalInfo())
+                .photoUrl(request.photoUrl())
+                .studentCode(request.studentCode())
                 .build();
 
         StudentEntity saved = studentRepository.save(entity);
@@ -76,6 +84,27 @@ public class StudentService {
         }
         if (request.schoolLatitude() != null && request.schoolLongitude() != null) {
             entity.setSchoolLocation(createPoint(request.schoolLongitude(), request.schoolLatitude()));
+        }
+        if (request.grade() != null) {
+            entity.setGrade(request.grade());
+        }
+        if (request.birthDate() != null) {
+            entity.setBirthDate(request.birthDate());
+        }
+        if (request.emergencyContact() != null) {
+            entity.setEmergencyContact(request.emergencyContact());
+        }
+        if (request.emergencyPhone() != null) {
+            entity.setEmergencyPhone(request.emergencyPhone());
+        }
+        if (request.medicalInfo() != null) {
+            entity.setMedicalInfo(request.medicalInfo());
+        }
+        if (request.photoUrl() != null) {
+            entity.setPhotoUrl(request.photoUrl());
+        }
+        if (request.studentCode() != null) {
+            entity.setStudentCode(request.studentCode());
         }
 
         StudentEntity saved = studentRepository.save(entity);
@@ -116,6 +145,14 @@ public class StudentService {
                 .schoolName(entity.getSchoolName())
                 .schoolLatitude(getLatitude(entity.getSchoolLocation()))
                 .schoolLongitude(getLongitude(entity.getSchoolLocation()))
+                .addressGeocoded(entity.getAddressGeocoded())
+                .birthDate(entity.getBirthDate())
+                .grade(entity.getGrade())
+                .emergencyContact(entity.getEmergencyContact())
+                .emergencyPhone(entity.getEmergencyPhone())
+                .medicalInfo(entity.getMedicalInfo())
+                .photoUrl(entity.getPhotoUrl())
+                .studentCode(entity.getStudentCode())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
