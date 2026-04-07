@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -30,20 +31,36 @@ public class GuardianService extends BaseCrudService<GuardianEntity, GuardianReq
                 .phone(request.phone())
                 .email(request.email())
                 .fcmToken(request.fcmToken())
+                .documentNumber(request.documentNumber())
+                .birthDate(request.birthDate())
+                .address(request.address())
+                .photoUrl(request.photoUrl())
+                .emergencyContact(request.emergencyContact())
+                .emergencyPhone(request.emergencyPhone())
+                .occupation(request.occupation())
+                .workPhone(request.workPhone())
                 .build();
     }
 
     @Override
     protected GuardianResponse toResponse(GuardianEntity entity) {
-        return new GuardianResponse(
-                entity.getId(),
-                entity.getName(),
-                entity.getPhone(),
-                entity.getEmail(),
-                entity.getFcmToken(),
-                entity.getCreatedAt(),
-                entity.getUpdatedAt()
-        );
+        return GuardianResponse.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .phone(entity.getPhone())
+                .email(entity.getEmail())
+                .fcmToken(entity.getFcmToken())
+                .documentNumber(entity.getDocumentNumber())
+                .birthDate(entity.getBirthDate())
+                .address(entity.getAddress())
+                .photoUrl(entity.getPhotoUrl())
+                .emergencyContact(entity.getEmergencyContact())
+                .emergencyPhone(entity.getEmergencyPhone())
+                .occupation(entity.getOccupation())
+                .workPhone(entity.getWorkPhone())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .build();
     }
 
     @Override
@@ -59,6 +76,30 @@ public class GuardianService extends BaseCrudService<GuardianEntity, GuardianReq
         }
         if (request.fcmToken() != null) {
             entity.setFcmToken(request.fcmToken());
+        }
+        if (request.documentNumber() != null) {
+            entity.setDocumentNumber(request.documentNumber());
+        }
+        if (request.birthDate() != null) {
+            entity.setBirthDate(request.birthDate());
+        }
+        if (request.address() != null) {
+            entity.setAddress(request.address());
+        }
+        if (request.photoUrl() != null) {
+            entity.setPhotoUrl(request.photoUrl());
+        }
+        if (request.emergencyContact() != null) {
+            entity.setEmergencyContact(request.emergencyContact());
+        }
+        if (request.emergencyPhone() != null) {
+            entity.setEmergencyPhone(request.emergencyPhone());
+        }
+        if (request.occupation() != null) {
+            entity.setOccupation(request.occupation());
+        }
+        if (request.workPhone() != null) {
+            entity.setWorkPhone(request.workPhone());
         }
     }
 

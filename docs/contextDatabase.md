@@ -306,12 +306,21 @@ CREATE INDEX idx_student_nfc_active ON student_nfc(student_id, is_active);
 | phone | VARCHAR(20) | NOT NULL | Teléfono móvil |
 | email | VARCHAR(255) | NULL | Email (opcional) |
 | fcm_token | TEXT | NULL | Token de Firebase Cloud Messaging |
+| document_number | VARCHAR(50) | NULL | Número de identificación |
+| birth_date | DATE | NULL | Fecha de nacimiento |
+| address | VARCHAR(500) | NULL | Dirección de residencia |
+| photo_url | VARCHAR(500) | NULL | URL de foto |
+| emergency_contact | VARCHAR(255) | NULL | Contacto de emergencia |
+| emergency_phone | VARCHAR(20) | NULL | Teléfono de emergencia |
+| occupation | VARCHAR(100) | NULL | Ocupación/Trabajo |
+| work_phone | VARCHAR(20) | NULL | Teléfono del trabajo |
 | created_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
 | updated_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de actualización |
 
 **Índices:**
 ```sql
 CREATE INDEX idx_guardians_phone ON guardians(phone);
+CREATE INDEX idx_guardians_email ON guardians(email);
 ```
 
 ---

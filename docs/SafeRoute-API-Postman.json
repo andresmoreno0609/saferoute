@@ -497,7 +497,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Pedro García\",\n  \"email\": \"pedro@email.com\",\n  \"phone\": \"+573001234567\"\n}"
+              "raw": "{\n  \"name\": \"Pedro García\",\n  \"email\": \"pedro@email.com\",\n  \"phone\": \"+573001234567\",\n  \"documentNumber\": \"12345678\",\n  \"birthDate\": \"1980-05-15\",\n  \"address\": \"Calle 123 #45-67, Bogotá\",\n  \"emergencyContact\": \"María García\",\n  \"emergencyPhone\": \"+573009876543\",\n  \"occupation\": \"Ingeniero\",\n  \"workPhone\": \"+5712345678\"}"
             }
           }
         },

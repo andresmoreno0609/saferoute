@@ -507,9 +507,40 @@ Authorization: Bearer <TOKEN_JWT>
 
 ```json
 {
-  "name": "string",
-  "phone": "string",
-  "email": "string"
+  "name": "Maria Perez",
+  "phone": "+573001234567",
+  "email": "maria@ejemplo.com",
+  "fcmToken": "firebase-token-xxx",
+  "documentNumber": "12345678",
+  "birthDate": "1980-05-15",
+  "address": "Calle 123 #45-67, Bogotá",
+  "photoUrl": "https://storage.com/photos/guardian.jpg",
+  "emergencyContact": "José Perez",
+  "emergencyPhone": "+573009876543",
+  "occupation": "Ingeniera",
+  "workPhone": "+5712345678"
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "id": "uuid",
+  "name": "Maria Perez",
+  "phone": "+573001234567",
+  "email": "maria@ejemplo.com",
+  "fcmToken": "firebase-token-xxx",
+  "documentNumber": "12345678",
+  "birthDate": "1980-05-15",
+  "address": "Calle 123 #45-67, Bogotá",
+  "photoUrl": "https://storage.com/photos/guardian.jpg",
+  "emergencyContact": "José Perez",
+  "emergencyPhone": "+573009876543",
+  "occupation": "Ingeniera",
+  "workPhone": "+5712345678",
+  "createdAt": "2024-01-01T00:00:00",
+  "updatedAt": "2024-01-01T00:00:00"
 }
 ```
 

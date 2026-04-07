@@ -208,8 +208,28 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
 - La **relación** puede ser: `father`, `mother`, `guardian`, `other`
 - Un acudiente puede ser **contacto de emergencia** o no
 - Un acudiente puede **recibir notificaciones** o no
+- Los campos adicionales son opcionales (documentNumber, birthDate, address, etc.)
 
-### 4.3 Relación Estudiante-Acudiente
+### 4.3 Datos del Acudiente
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| name | String | ✅ | Nombre completo |
+| phone | String | ✅ | Teléfono móvil |
+| email | String | ❌ | Email |
+| fcmToken | String | ❌ | Token para push notifications |
+| documentNumber | String | ❌ | Número de identificación |
+| birthDate | LocalDate | ❌ | Fecha de nacimiento |
+| address | String | ❌ | Dirección de residencia |
+| photoUrl | String | ❌ | URL de foto |
+| emergencyContact | String | ❌ | Contacto de emergencia |
+| emergencyPhone | String | ❌ | Teléfono de emergencia |
+| occupation | String | ❌ | Ocupación/Trabajo |
+| workPhone | String | ❌ | Teléfono del trabajo |
+
+> ⚠️ **Nota importante:** El campo `preferredLanguage` para notificaciones en diferentes idiomas está definido pero **NO se implementará en esta etapa**. Queda pendiente para versión futura.
+
+### 4.4 Relación Estudiante-Acudiente
 
 ```
 ┌─────────────────┐       ┌──────────────────────┐       ┌─────────────────┐
@@ -230,7 +250,16 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
 {
   "name": "Maria Perez",
   "phone": "+573001234567",
-  "email": "maria@ejemplo.com"
+  "email": "maria@ejemplo.com",
+  "fcmToken": "firebase-token-xxx",
+  "documentNumber": "12345678",
+  "birthDate": "1980-05-15",
+  "address": "Calle 123 #45-67, Bogotá",
+  "photoUrl": "https://storage.com/photos/guardian.jpg",
+  "emergencyContact": "José Perez",
+  "emergencyPhone": "+573009876543",
+  "occupation": "Ingeniera",
+  "workPhone": "+5712345678"
 }
 ```
 
@@ -241,8 +270,19 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
   "name": "Maria Perez",
   "phone": "+573001234567",
   "email": "maria@ejemplo.com",
-  "createdAt": "2024-01-01T00:00:00Z"
+  "fcmToken": "firebase-token-xxx",
+  "documentNumber": "12345678",
+  "birthDate": "1980-05-15",
+  "address": "Calle 123 #45-67, Bogotá",
+  "photoUrl": "https://storage.com/photos/guardian.jpg",
+  "emergencyContact": "José Perez",
+  "emergencyPhone": "+573009876543",
+  "occupation": "Ingeniera",
+  "workPhone": "+5712345678",
+  "createdAt": "2024-01-01T00:00:00Z",
+  "updatedAt": "2024-01-01T00:00:00Z"
 }
+```
 ```
 
 **AssociateStudentRequest:**
