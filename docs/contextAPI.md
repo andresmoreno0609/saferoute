@@ -572,7 +572,8 @@ Authorization: Bearer <TOKEN_JWT>
       "licenseCategory": "B",
       "startDate": "2026-01-01",
       "endDate": "2028-01-01",
-      "isActive": true
+      "isActive": true,
+      "isVerified": false
     }
   ],
   "createdAt": "timestamp"
@@ -607,6 +608,48 @@ Authorization: Bearer <TOKEN_JWT>
 
 ---
 
+### GET /api/v1/drivers/{id}/availability
+
+**Descripción:** Verificar si el conductor puede trabajar (documentos vigentes y verificados)
+
+**Autenticación:** Requiere token
+
+**Response (200 OK):**
+
+```json
+{
+  "available": true,
+  "reason": null,
+  "documentsRequired": ["LICENCIA", "SOAP", "SEGURO", "TECNOMECANICA", "TARJETA_PROPIEDAD"],
+  "documentsMissing": [],
+  "documentsExpired": []
+}
+```
+
+**Response cuando no disponible (200 OK):**
+
+```json
+{
+  "available": false,
+  "reason": "Documentos vencidos o faltantes",
+  "documentsRequired": ["LICENCIA", "SOAP", "SEGURO", "TECNOMECANICA", "TARJETA_PROPIEDAD"],
+  "documentsMissing": ["SOAP", "SEGURO", "TECNOMECANICA"],
+  "documentsExpired": []
+}
+```
+
+---
+
+### DELETE /api/v1/drivers/{id}
+
+**Descripción:** Eliminar conductor
+
+**Autenticación:** Requiere token + rol ADMIN
+
+---
+
+## 6b. 🚗 Drivers - Documentos
+
 ### GET /api/v1/drivers/{id}/documents
 
 **Descripción:** Listar documentos del conductor
@@ -638,48 +681,6 @@ Authorization: Bearer <TOKEN_JWT>
 
 ---
 
-### GET /api/v1/drivers/{id}/availability
-
-**Descripción:** Verificar si el conductor puede trabajar (documentos vigentes)
-
-**Autenticación:** Requiere token
-
-**Response (200 OK):**
-
-```json
-{
-  "available": true,
-  "reason": null,
-  "documentsRequired": [
-    "LICENCIA"
-  ],
-  "documentsMissing": [],
-  "documentsExpired": []
-}
-```
-
-**Response cuando no disponible (200 OK):**
-
-```json
-{
-  "available": false,
-  "reason": "Documentos vencidos o faltantes",
-  "documentsRequired": ["LICENCIA", "SOAP", "SEGURO", "TECNOMECANICA", "TARJETA_PROPIEDAD"],
-  "documentsMissing": ["SOAP", "SEGURO", "TECNOMECANICA"],
-  "documentsExpired": []
-}
-```
-
----
-
-### DELETE /api/v1/drivers/{id}/documents/{documentId}
-
-**Descripción:** Eliminar documento del conductor (soft delete - marca como inactivo)
-
-**Autenticación:** Requiere token + rol ADMIN
-
----
-
 ### POST /api/v1/drivers/{id}/documents/{documentId}/verify
 
 **Descripción:** Verificar documento del conductor (Admin)
@@ -691,25 +692,6 @@ Authorization: Bearer <TOKEN_JWT>
 ```json
 {
   "verifiedBy": "uuid"
-}
-```
-
-**Response (200 OK):**
-
-```json
-{
-  "id": "uuid",
-  "documentType": "LICENCIA",
-  "documentNumber": "12345678",
-  "licenseCategory": "B",
-  "fileUrl": "https://...",
-  "startDate": "2026-01-01",
-  "endDate": "2028-01-01",
-  "isActive": true,
-  "isVerified": true,
-  "verifiedAt": "2026-04-06T10:00:00",
-  "verifiedBy": "uuid",
-  "rejectionReason": null
 }
 ```
 
@@ -729,6 +711,14 @@ Authorization: Bearer <TOKEN_JWT>
   "reason": "Documento ilegible, datos no coinciden"
 }
 ```
+
+---
+
+### DELETE /api/v1/drivers/{id}/documents/{documentId}
+
+**Descripción:** Eliminar documento del conductor (soft delete - marca como inactivo)
+
+**Autenticación:** Requiere token + rol ADMIN
 
 ---
 
@@ -813,6 +803,8 @@ Authorization: Bearer <TOKEN_JWT>
 
 ---
 
+## 7b. 🚐 Vehicles - Documentos
+
 ### GET /api/v1/vehicles/{id}/documents
 
 **Descripción:** Listar documentos del vehículo
@@ -856,14 +848,6 @@ Authorization: Bearer <TOKEN_JWT>
 
 ---
 
-### DELETE /api/v1/vehicles/{id}/documents/{documentId}
-
-**Descripción:** Eliminar documento del vehículo (soft delete - marca como inactivo)
-
-**Autenticación:** Requiere token + rol ADMIN
-
----
-
 ### POST /api/v1/vehicles/{id}/documents/{documentId}/verify
 
 **Descripción:** Verificar documento del vehículo (Admin)
@@ -878,15 +862,34 @@ Authorization: Bearer <TOKEN_JWT>
 }
 ```
 
-**Response (200 OK):**
+---
+
+### POST /api/v1/vehicles/{id}/documents/{documentId}/reject
+
+**Descripción:** Rechazar documento del vehículo (Admin)
+
+**Autenticación:** Requiere token + rol ADMIN
+
+**Request Body:**
 
 ```json
 {
-  "id": "uuid",
-  "documentType": "SOAP",
-  "fileUrl": "https://...",
-  "startDate": "2026-01-01",
-  "endDate": "2027-01-01",
+  "verifiedBy": "uuid",
+  "reason": "Placa no coincide con el documento"
+}
+```
+
+---
+
+### DELETE /api/v1/vehicles/{id}/documents/{documentId}
+
+**Descripción:** Eliminar documento del vehículo (soft delete - marca como inactivo)
+
+**Autenticación:** Requiere token + rol ADMIN
+
+---
+
+## 8. 🛣️ Routes
   "isActive": true,
   "isVerified": true,
   "verifiedAt": "2026-04-06T10:00:00",

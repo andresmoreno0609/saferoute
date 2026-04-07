@@ -270,6 +270,37 @@
           }
         },
         {
+          "name": "Verificar Disponibilidad",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/drivers/ID/availability",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03b. Conductores - Documentos",
+      "item": [
+        {
+          "name": "Listar Documentos del Conductor",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/drivers/ID/documents",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
           "name": "Agregar Documento al Conductor",
           "request": {
             "method": "POST",
@@ -288,32 +319,6 @@
               "mode": "raw",
               "raw": "{\n  \"documentType\": \"LICENCIA\",\n  \"documentNumber\": \"12345678\",\n  \"licenseCategory\": \"B\",\n  \"fileUrl\": \"https://storage.example.com/license.pdf\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2028-01-01\"\n}"
             }
-          }
-        },
-        {
-          "name": "Listar Documentos del Conductor",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/v1/drivers/ID/documents",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ]
-          }
-        },
-        {
-          "name": "Verificar Disponibilidad",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/v1/drivers/ID/availability",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ]
           }
         },
         {
@@ -1179,6 +1184,24 @@
               }
             ]
           }
+        }
+      ]
+    },
+    {
+      "name": "14b. Vehículos - Documentos",
+      "item": [
+        {
+          "name": "Listar Documentos del Vehículo",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/vehicles/ID/documents",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
         },
         {
           "name": "Agregar Documento al Vehículo",
@@ -1199,19 +1222,6 @@
               "mode": "raw",
               "raw": "{\n  \"documentType\": \"SOAP\",\n  \"fileUrl\": \"https://storage.example.com/soap.pdf\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2027-01-01\"\n}"
             }
-          }
-        },
-        {
-          "name": "Listar Documentos del Vehículo",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/v1/vehicles/ID/documents",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ]
           }
         },
         {
