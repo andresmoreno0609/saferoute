@@ -17,9 +17,11 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
 | **students** | Registro de estudiantes | 🔴 MVP |
 | **guardians** | Acudientes y relaciones | 🔴 MVP |
 | **drivers** | Información de conductores | 🔴 MVP |
+| **vehicles** | Gestión de vehículos y documentos | 🔴 MVP |
 | **routes** | Gestión de rutas escolares | 🔴 MVP |
 | **tracking** | GPS en tiempo real | 🔴 MVP |
 | **events** | Eventos del estudiante | 🔴 MVP |
+| **nfc** | Sistema de identificación NFC | 🔴 MVP |
 | **observations** | Novedades y fotos | 🟡 v2 |
 | **notifications** | Push notifications FCM | 🟡 v2 |
 
@@ -115,6 +117,14 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
 | location | Point (PostGIS) | ✅ | Coordenadas de casa |
 | schoolName | String | ❌ | Nombre del colegio |
 | schoolLocation | Point (PostGIS) | ❌ | Coordenadas del colegio |
+| addressGeocoded | Boolean | ✅ | ¿Dirección geocodificada? |
+| birthDate | LocalDate | ❌ | Fecha de nacimiento |
+| grade | String | ❌ | Grado escolar |
+| emergencyContact | String | ❌ | Contacto de emergencia |
+| emergencyPhone | String | ❌ | Teléfono de emergencia |
+| medicalInfo | String | ❌ | Info médica (alergias, medicamentos) |
+| photoUrl | String | ❌ | URL de foto |
+| studentCode | String | ❌ | Código interno del estudiante |
 
 ### 3.4 DTOs
 
@@ -122,12 +132,18 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
 ```json
 {
   "name": "Juan Perez",
-  "address": "Calle 123 #45-67",
-  "latitude": 4.7110,
-  "longitude": -74.0721,
+  "address": "Calle 123 #45-67, Bogotá",
+  "homeLatitude": 4.7110,
+  "homeLongitude": -74.0721,
   "schoolName": "Colegio San Ignacio",
   "schoolLatitude": 4.7200,
-  "schoolLongitude": -74.0800
+  "schoolLongitude": -74.0800,
+  "grade": "1°",
+  "birthDate": "2015-05-15",
+  "emergencyContact": "María Perez",
+  "emergencyPhone": "+573001234567",
+  "medicalInfo": "Alergia a frutos secos",
+  "studentCode": "EST-001"
 }
 ```
 
@@ -136,11 +152,22 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
 {
   "id": "uuid",
   "name": "Juan Perez",
-  "address": "Calle 123 #45-67",
-  "location": { "lat": 4.7110, "lng": -74.0721 },
+  "address": "Calle 123 #45-67, Bogotá",
+  "homeLatitude": 4.7110,
+  "homeLongitude": -74.0721,
   "schoolName": "Colegio San Ignacio",
-  "schoolLocation": { "lat": 4.7200, "lng": -74.0800 },
-  "createdAt": "2024-01-01T00:00:00Z"
+  "schoolLatitude": 4.7200,
+  "schoolLongitude": -74.0800,
+  "addressGeocoded": true,
+  "birthDate": "2015-05-15",
+  "grade": "1°",
+  "emergencyContact": "María Perez",
+  "emergencyPhone": "+573001234567",
+  "medicalInfo": "Alergia a frutos secos",
+  "photoUrl": "https://storage.com/photos/student.jpg",
+  "studentCode": "EST-001",
+  "createdAt": "2024-01-01T00:00:00Z",
+  "updatedAt": "2024-01-01T00:00:00Z"
 }
 ```
 
@@ -250,20 +277,43 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
 | Funcionalidad | Descripción | Método HTTP |
 |---------------|-------------|-------------|
 | Crear conductor | Registrar conductor con vehículo | POST |
-| Actualizar conductor | Modificar datos del conductor/vehículo | PUT |
+| Actualizar conductor | Modificar datos del conductor | PUT |
 | Eliminar conductor | Soft delete | DELETE |
 | Buscar por ID | Obtener por UUID | GET |
-| Listar conductores | Obtener todos | GET |
-| Buscar por placa | Obtener conductor por placa del vehículo | GET |
+| Listar conductors | Obtener todos | GET |
+| Consultar disponibilidad | Verificar si conductor puede trabajar | GET |
+| Verificar documentos | Revisar estado de documentos | GET |
 
 ### 5.2 Reglas de Negocio
 
 - Un conductor **relaciona 1:1 con Users**
-- La **placa del vehículo es única**
-- Información del vehículo: **placa, modelo, color** (todos obligatorios)
-- El conductor **puede tener múltiples rutas** (en diferentes fechas)
+- Un conductor **debe estar verificado por ADMIN** (`isVerified`) para poder trabajar
+- El conductor debe tener un **vehículo asignado**
+- El conductor debe tener una **licencia válida** (documento activo y no vencido)
+- El vehículo del conductor debe tener **todos los documentos obligatorios** (SOAP, SEGURO, TECNOMECANICA, TARJETA_PROPIEDAD)
 
-### 5.3 DTOs
+### 5.3 Datos del Conductor
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| name | String | ✅ | Nombre completo |
+| phone | String | ✅ | Teléfono de contacto |
+| documentNumber | String | ❌ | Número de identificación |
+| birthDate | LocalDate | ❌ | Fecha de nacimiento |
+| address | String | ❌ | Dirección de residencia |
+| licenseNumber | String | ❌ | Número de licencia |
+| licenseCategory | String | ❌ | Categoría (A, B, C, etc.) |
+| licenseExpirationDate | LocalDate | ❌ | Vencimiento de licencia |
+| emergencyContact | String | ❌ | Contacto de emergencia |
+| emergencyPhone | String | ❌ | Teléfono de emergencia |
+| yearsExperience | Integer | ❌ | Años de experiencia |
+| photoUrl | String | ❌ | URL de foto |
+| bankName | String | ❌ | Banco para pagos |
+| bankAccount | String | ❌ | Número de cuenta |
+| vehicleId | UUID | ❌ | Vehículo asignado |
+| isVerified | Boolean | ✅ | Verificado por ADMIN |
+
+### 5.4 DTOs
 
 **DriverRequest:**
 ```json
@@ -271,9 +321,17 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
   "userId": "uuid-del-usuario",
   "name": "Carlos Rodriguez",
   "phone": "+573009876543",
-  "vehiclePlate": "ABC-123",
-  "vehicleModel": "Toyota Hiace",
-  "vehicleColor": "Blanco"
+  "documentNumber": "12345678",
+  "birthDate": "1985-03-15",
+  "address": "Calle 123 #45-67, Bogotá",
+  "licenseNumber": "Lic-123456",
+  "licenseCategory": "B",
+  "licenseExpirationDate": "2028-03-15",
+  "emergencyContact": "Ana Rodriguez",
+  "emergencyPhone": "+573009876999",
+  "yearsExperience": 5,
+  "bankName": "Banco de Bogotá",
+  "bankAccount": "1234567890"
 }
 ```
 
@@ -284,9 +342,20 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
   "userId": "uuid-del-usuario",
   "name": "Carlos Rodriguez",
   "phone": "+573009876543",
-  "vehiclePlate": "ABC-123",
-  "vehicleModel": "Toyota Hiace",
-  "vehicleColor": "Blanco",
+  "documentNumber": "12345678",
+  "birthDate": "1985-03-15",
+  "address": "Calle 123 #45-67, Bogotá",
+  "licenseNumber": "Lic-123456",
+  "licenseCategory": "B",
+  "licenseExpirationDate": "2028-03-15",
+  "emergencyContact": "Ana Rodriguez",
+  "emergencyPhone": "+573009876999",
+  "yearsExperience": 5,
+  "photoUrl": "https://storage.com/photos/driver.jpg",
+  "bankName": "Banco de Bogotá",
+  "bankAccount": "1234567890",
+  "vehicleId": "uuid-del-vehiculo",
+  "isVerified": true,
   "createdAt": "2024-01-01T00:00:00Z"
 }
 ```
@@ -298,13 +367,112 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
 | POST | `/api/v1/drivers` | Crear conductor |
 | GET | `/api/v1/drivers/{id}` | Obtener por ID |
 | GET | `/api/v1/drivers` | Listar |
-| GET | `/api/v1/drivers/plate/{plate}` | Buscar por placa |
 | PUT | `/api/v1/drivers/{id}` | Actualizar |
 | DELETE | `/api/v1/drivers/{id}` | Eliminar |
+| GET | `/api/v1/drivers/{id}/availability` | Consultar disponibilidad |
+| GET | `/api/v1/drivers/{id}/documents` | Ver documentos del conductor |
+| PUT | `/api/v1/drivers/{id}/verify` | Verificar conductor (Admin) |
 
 ---
 
-## 6. 🛣️ Routes Module
+## 6. 🚐 Vehicles Module
+
+### 6.1 Funcionalidades
+
+| Funcionalidad | Descripción | Método HTTP |
+|---------------|-------------|-------------|
+| Crear vehículo | Registrar nuevo vehículo | POST |
+| Actualizar vehículo | Modificar datos del vehículo | PUT |
+| Eliminar vehículo | Soft delete | DELETE |
+| Buscar por ID | Obtener vehículo por UUID | GET |
+| Listar vehículos | Obtener todos los vehículos | GET |
+| Agregar documento | Agregar documento al vehículo | POST |
+| Listar documentos | Ver documentos del vehículo | GET |
+| Verificar documento | Aprobar documento (Admin) | POST |
+| Rechazar documento | Rechazar documento (Admin) | POST |
+| Eliminar documento | Eliminar documento (soft delete) | DELETE |
+
+### 6.2 Documentos Obligatorios del Vehículo
+
+| Documento | Tipo | Vigencia | Descripción |
+|-----------|------|----------|-------------|
+| SOAP | vehicle_documents | Fecha fin | Seguro Obligatorio de Accidentes de Tránsito |
+| SEGURO | vehicle_documents | Fecha fin | Seguro de responsabilidad civil |
+| TECNOMECANICA | vehicle_documents | Fecha fin | Revisión técnico-mecánica |
+| TARJETA_PROPIEDAD | vehicle_documents | NULL | Sin vencimiento |
+
+### 6.3 Reglas de Negocio
+
+- La **placa del vehículo es única** en todo el sistema
+- Solo un **documento activo por tipo** (al crear nuevo, anterior se inactiva)
+- Los documentos pueden tener **fecha de fin NULL** (sin vencimiento)
+- Para que un conductor pueda trabajar, el vehículo debe tener **todos los documentos activos y vigentes**
+- Los documentos requieren **verificación manual por ADMIN**
+
+### 6.4 Datos del Vehículo
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| plate | String | ✅ | Placa única del vehículo |
+| model | String | ❌ | Modelo del vehículo |
+| brand | String | ❌ | Marca del vehículo |
+| color | String | ❌ | Color del vehículo |
+| capacity | Integer | ❌ | Capacidad de pasajeros |
+
+### 6.5 DTOs
+
+**VehicleRequest:**
+```json
+{
+  "plate": "ABC-123",
+  "model": "Toyota Hiace",
+  "brand": "Toyota",
+  "color": "Blanco",
+  "capacity": 15
+}
+```
+
+**VehicleResponse:**
+```json
+{
+  "id": "uuid",
+  "plate": "ABC-123",
+  "model": "Toyota Hiace",
+  "brand": "Toyota",
+  "color": "Blanco",
+  "capacity": 15,
+  "createdAt": "2024-01-01T00:00:00Z"
+}
+```
+
+**VehicleDocumentRequest:**
+```json
+{
+  "documentType": "SOAP",
+  "fileUrl": "https://storage.com/docs/soap.pdf",
+  "startDate": "2026-01-01",
+  "endDate": "2027-01-01"
+}
+```
+
+### 6.6 Endpoints
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/v1/vehicles` | Crear vehículo |
+| GET | `/api/v1/vehicles/{id}` | Obtener por ID |
+| GET | `/api/v1/vehicles` | Listar |
+| PUT | `/api/v1/vehicles/{id}` | Actualizar |
+| DELETE | `/api/v1/vehicles/{id}` | Eliminar |
+| GET | `/api/v1/vehicles/{id}/documents` | Listar documentos |
+| POST | `/api/v1/vehicles/{id}/documents` | Agregar documento |
+| POST | `/api/v1/vehicles/{id}/documents/{docId}/verify` | Verificar documento |
+| POST | `/api/v1/vehicles/{id}/documents/{docId}/reject` | Rechazar documento |
+| DELETE | `/api/v1/vehicles/{id}/documents/{docId}` | Eliminar documento |
+
+---
+
+## 7. 🛣️ Routes Module
 
 ### 6.1 Funcionalidades
 
@@ -547,6 +715,85 @@ Ruta Finalizada
 | GET | `/api/v1/events/student/{studentId}` | Eventos por estudiante |
 | GET | `/api/v1/events/route/{routeId}` | Eventos de una ruta |
 | GET | `/api/v1/events/student/{studentId}/route/{routeId}/latest` | Último evento |
+
+---
+
+## 8. 📱 NFC Module (Student NFC)
+
+### 8.1 Funcionalidades
+
+| Funcionalidad | Descripción | Método HTTP |
+|---------------|-------------|-------------|
+| Asignar NFC | Asignar tarjeta NFC a estudiante | POST |
+| Obtener NFC activo | Ver NFC activo del estudiante | GET |
+| Desactivar NFC | Desactivar NFC del estudiante | DELETE |
+| Ver historial | Ver historial de NFCs del estudiante | GET |
+| Escanear NFC | Detectar estudiante por NFC | POST |
+
+### 8.2 Reglas de Negocio
+
+- Solo **UN NFC activo** por estudiante a la vez
+- Al asignar nuevo NFC, el **anterior se inactiva automáticamente**
+- Se mantiene **histórico de todos los NFCs** (inactivos)
+- El **NFC UID debe ser único** en todo el sistema
+- Un NFC puede tener **fecha de desactivación** cuando se reemplaza
+
+### 8.3 Datos del NFC
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| id | UUID | Identificador único |
+| studentId | UUID | Estudiante asignado |
+| nfcUid | String | UID único de la tarjeta NFC |
+| isActive | Boolean | ¿NFC activo? |
+| assignedAt | Timestamp | Fecha de asignación |
+| deactivatedAt | Timestamp | Fecha de desactivación (nullable) |
+| assignedBy | UUID | Usuario que asignó |
+| notes | String | Notas adicionales |
+
+### 8.4 DTOs
+
+**AssignNfcRequest:**
+```json
+{
+  "nfcUid": "ABC123456789",
+  "notes": "Tarjeta asignada el 06/04/2026"
+}
+```
+
+**NfcScanRequest:**
+```json
+{
+  "nfcUid": "ABC123456789"
+}
+```
+
+**StudentNfcResponse:**
+```json
+{
+  "id": "uuid",
+  "studentId": "uuid",
+  "studentName": "Juan Perez",
+  "nfcUid": "ABC123456789",
+  "isActive": true,
+  "assignedAt": "2026-04-06T10:00:00",
+  "deactivatedAt": null,
+  "assignedBy": "uuid",
+  "notes": "Tarjeta asignada el 06/04/2026",
+  "createdAt": "2026-04-06T10:00:00",
+  "updatedAt": "2026-04-06T10:00:00"
+}
+```
+
+### 8.5 Endpoints
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/v1/students/{id}/nfc` | Asignar NFC |
+| GET | `/api/v1/students/{id}/nfc` | Obtener NFC activo |
+| DELETE | `/api/v1/students/{id}/nfc` | Desactivar NFC |
+| GET | `/api/v1/students/{id}/nfc/history` | Ver historial |
+| POST | `/api/v1/nfc/scan` | Escanear NFC |
 
 ---
 

@@ -109,10 +109,21 @@ El MVP tiene como objetivo principal:
 
 * Gestión de conductores
 * Información del vehículo
+* Documentos del conductor (licencia, cédula)
+* Verificación por ADMIN
+* Disponibilidad para rutas
 
 ---
 
-### 5.6 routes
+### 5.6 vehicles
+
+* Gestión de vehículos
+* Documentos del vehículo (SOAP, Seguro, Tecno-mecánica, Tarjeta propiedad)
+* Verificación de documentos por ADMIN
+
+---
+
+### 5.7 routes
 
 * Creación de rutas
 * Asignación de conductor
@@ -120,7 +131,16 @@ El MVP tiene como objetivo principal:
 
 ---
 
-### 5.7 tracking
+### 5.8 nfc
+
+* Sistema de identificación de estudiantes por NFC
+* Asignación de tarjetas NFC
+* Historial deNFC por estudiante
+* Escaneo de NFC para detectar estudiante
+
+---
+
+### 5.9 tracking
 
 * Recepción de coordenadas GPS
 * Almacenamiento de posiciones
@@ -128,7 +148,7 @@ El MVP tiene como objetivo principal:
 
 ---
 
-### 5.8 trips (eventos)
+### 5.10 trips (eventos)
 
 * Registro de eventos del estudiante:
 
@@ -229,6 +249,10 @@ Ejemplos:
 
 * Un estudiante puede tener múltiples acudientes
 * Un conductor puede tener múltiples rutas, pero solo una activa
+* Un conductor debe estar verificado por ADMIN para trabajar
+* Un conductor debe tener vehículo con todos los documentos vigentes
+* Solo un documento activo por tipo (vehículo y conductor)
+* Un estudiante puede tener múltiples NFCs (histórico), solo uno activo
 * Una ruta tiene múltiples paradas
 * Cada parada corresponde a un estudiante
 * Los eventos no se editan (son inmutables)
@@ -241,7 +265,7 @@ Ejemplos:
 * Uso de mensajería (Kafka o RabbitMQ)
 * Optimización automática de rutas
 * Integración de pagos
-* Identificación mediante NFC
+* Integración NFC con eventos de ruta (BOARD/DROP automático)
 
 ---
 
