@@ -150,6 +150,7 @@ public record EntityRequest(
 
 **Response DTO:**
 ```java
+@Builder
 public record EntityResponse(
     UUID id,
     String field,
@@ -162,6 +163,8 @@ public record EntityResponse(
 - Nombrar como `{Entidad}Request` y `{Entidad}Response`
 - Incluir todos los campos relevantes (no exponer password_hash)
 - Para responses complejos, crear DTO específico
+- **SIEMPRE** usar `@Builder` de Lombok en records - genera automáticamente el builder sin necesidad de escribir la clase manualmente
+- Uso del builder: `EntityResponse.builder().id(...).field(...).build()`
 
 ---
 
@@ -399,6 +402,10 @@ public class EntityController {
 
 // UseCase
 @Component @Slf4j
+
+// DTO Records (Response)
+@Builder
+public record EntityResponse(...) {}
 ```
 
 ### 5.3 Inyección de Dependencias
