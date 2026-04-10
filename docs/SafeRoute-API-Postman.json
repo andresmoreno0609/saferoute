@@ -132,7 +132,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"usuario@test.com\",\n  \"password\": \"password123\",\n  \"name\": \"Usuario Test\",\n  \"role\": \"DRIVER\"\n}"
+              "raw": "{\n  \"email\": \"conductor@test.com\",\n  \"password\": \"password123\",\n  \"name\": \"Juan Pérez\",\n  \"roles\": [\"DRIVER\"]\n}"
             }
           }
         },

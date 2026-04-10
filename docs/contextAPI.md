@@ -46,6 +46,20 @@ Todos los endpoints protegidos requieren el header:
 Authorization: Bearer <TOKEN_JWT>
 ```
 
+**Payload del JWT:**
+
+```json
+{
+  "sub": "uuid-del-usuario",
+  "email": "usuario@email.com",
+  "roles": ["DRIVER", "GUARDIAN"],
+  "iat": 1234567890,
+  "exp": 1234571490
+}
+```
+
+> ⚠️ **Nota:** El JWT ahora contiene un array `roles` en lugar de un solo `role`. El sistema soporta múltiples roles por usuario.
+
 ---
 
 ### 2.2 Obtener Token
@@ -76,7 +90,7 @@ Authorization: Bearer <TOKEN_JWT>
     "id": "uuid",
     "email": "string",
     "name": "string",
-    "role": "ADMIN | DRIVER | GUARDIAN"
+    "roles": ["ADMIN", "DRIVER", "GUARDIAN"]
   }
 }
 ```
@@ -103,7 +117,7 @@ Authorization: Bearer <TOKEN_JWT>
   "email": "string",
   "password": "string",
   "name": "string",
-  "role": "ADMIN | DRIVER | GUARDIAN"
+  "roles": ["ADMIN", "DRIVER", "GUARDIAN"]
 }
 ```
 
@@ -114,7 +128,7 @@ Authorization: Bearer <TOKEN_JWT>
   "id": "uuid",
   "email": "string",
   "name": "string",
-  "role": "ADMIN | DRIVER | GUARDIAN",
+  "roles": ["ADMIN", "DRIVER", "GUARDIAN"],
   "createdAt": "timestamp"
 }
 ```
@@ -200,10 +214,10 @@ Authorization: Bearer <TOKEN_JWT>
       "id": "uuid",
       "email": "string",
       "name": "string",
-      "role": "ADMIN | DRIVER | GUARDIAN",
+      "roles": ["ADMIN", "DRIVER", "GUARDIAN"],
       "status": "ACTIVE | INACTIVE | DELETED",
       "createdAt": "timestamp",
-      "lastLoginDate": "timestamp | null"
+      "lastLoginAt": "timestamp | null"
     }
   ],
   "totalElements": 100,
@@ -216,7 +230,7 @@ Authorization: Bearer <TOKEN_JWT>
 
 ### POST /api/v1/users
 
-**Descripción:** Crear nuevo usuario
+**Descripción:** Crear nuevo usuario (soporta multi-rol)
 
 **Autenticación:** Requiere token + rol ADMIN
 
@@ -224,10 +238,10 @@ Authorization: Bearer <TOKEN_JWT>
 
 ```json
 {
-  "email": "string",
-  "password": "string",
-  "name": "string",
-  "role": "ADMIN | DRIVER | GUARDIAN"
+  "email": "juan@email.com",
+  "password": "password123",
+  "name": "Juan Pérez",
+  "roles": ["DRIVER", "GUARDIAN"]
 }
 ```
 
@@ -236,9 +250,9 @@ Authorization: Bearer <TOKEN_JWT>
 ```json
 {
   "id": "uuid",
-  "email": "string",
-  "name": "string",
-  "role": "ADMIN | DRIVER | GUARDIAN",
+  "email": "juan@email.com",
+  "name": "Juan Pérez",
+  "roles": ["DRIVER", "GUARDIAN"],
   "status": "ACTIVE",
   "createdAt": "timestamp"
 }
@@ -257,12 +271,12 @@ Authorization: Bearer <TOKEN_JWT>
 ```json
 {
   "id": "uuid",
-  "email": "string",
-  "name": "string",
-  "role": "ADMIN | DRIVER | GUARDIAN",
-  "status": "ACTIVE | INACTIVE | DELETED",
+  "email": "juan@email.com",
+  "name": "Juan Pérez",
+  "roles": ["DRIVER", "GUARDIAN"],
+  "status": "ACTIVE",
   "createdAt": "timestamp",
-  "lastLoginDate": "timestamp | null"
+  "lastLoginAt": "timestamp | null"
 }
 ```
 
@@ -296,7 +310,7 @@ Authorization: Bearer <TOKEN_JWT>
   "id": "uuid",
   "email": "string",
   "name": "string",
-  "role": "ADMIN | DRIVER | GUARDIAN",
+  "roles": ["ADMIN", "DRIVER", "GUARDIAN"],
   "status": "ACTIVE",
   "updatedAt": "timestamp"
 }
