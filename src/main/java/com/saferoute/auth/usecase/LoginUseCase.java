@@ -16,6 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Use case for user login.
  */
@@ -50,17 +53,22 @@ public class LoginUseCase extends UseCaseAdvance<AuthLoginRequest, AuthResponse>
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account is not active");
         }
 
-        // Generate tokens
+        // Get roles as Set<String>
+        Set<String> roleNames = user.getRoles().stream()
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+
+        // Generate tokens with roles
         String accessToken = jwtService.generateAccessToken(
                 user.getId(),
                 user.getEmail(),
-                user.getRole().name()
+                roleNames
         );
 
         String refreshToken = jwtService.generateRefreshToken(
                 user.getId(),
                 user.getEmail(),
-                user.getRole().name()
+                roleNames
         );
 
         // Update last login
@@ -72,7 +80,7 @@ public class LoginUseCase extends UseCaseAdvance<AuthLoginRequest, AuthResponse>
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .role(user.getRole())
+                .roles(user.getRoles())
                 .status(user.getStatus())
                 .createdAt(user.getCreatedAt())
                 .lastLoginAt(user.getLastLoginAt())

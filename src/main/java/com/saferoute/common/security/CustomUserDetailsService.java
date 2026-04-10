@@ -12,7 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Custom UserDetailsService for Spring Security.
@@ -57,9 +59,10 @@ public class CustomUserDetailsService implements UserDetailsService {
      * Build Spring Security UserDetails from UserEntity.
      */
     private UserDetails buildUserDetails(UserEntity user) {
-        List<SimpleGrantedAuthority> authorities = List.of(
-                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
-        );
+        // Convert roles to authorities with ROLE_ prefix
+        Set<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                .collect(Collectors.toSet());
 
         return User.builder()
                 .username(user.getId().toString())

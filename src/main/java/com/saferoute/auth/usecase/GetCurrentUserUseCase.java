@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -42,17 +43,21 @@ public class GetCurrentUserUseCase extends UseCaseAdvance<Void, AuthResponse> {
         UserEntity user = userRepository.findById(uuid)
                 .orElseThrow(() -> new IllegalStateException("User not found: " + userId));
 
-        // Generate tokens
+        // Generate tokens with roles
+        Set<String> roleNames = user.getRoles().stream()
+                .map(Enum::name)
+                .collect(java.util.stream.Collectors.toSet());
+        
         String accessToken = jwtService.generateAccessToken(
                 user.getId(),
                 user.getEmail(),
-                user.getRole().name()
+                roleNames
         );
 
         String refreshToken = jwtService.generateRefreshToken(
                 user.getId(),
                 user.getEmail(),
-                user.getRole().name()
+                roleNames
         );
 
         // Build response
@@ -60,7 +65,7 @@ public class GetCurrentUserUseCase extends UseCaseAdvance<Void, AuthResponse> {
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .role(user.getRole())
+                .roles(user.getRoles())
                 .status(user.getStatus())
                 .createdAt(user.getCreatedAt())
                 .lastLoginAt(user.getLastLoginAt())

@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Use case for refreshing access token.
  */
@@ -40,24 +43,28 @@ public class RefreshTokenUseCase extends UseCaseAdvance<String, AuthResponse> {
         // Extract user info from refresh token
         var userId = jwtService.extractUserId(refreshToken);
         String email = jwtService.extractEmail(refreshToken);
-        String role = jwtService.extractRole(refreshToken);
 
         // Find user
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
 
-        // Generate new access token (keep same refresh token or generate new one)
+        // Get roles as Set<String>
+        Set<String> roleNames = user.getRoles().stream()
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+
+        // Generate new access token with roles
         String newAccessToken = jwtService.generateAccessToken(
                 user.getId(),
                 user.getEmail(),
-                user.getRole().name()
+                roleNames
         );
 
         // Generate new refresh token
         String newRefreshToken = jwtService.generateRefreshToken(
                 user.getId(),
                 user.getEmail(),
-                user.getRole().name()
+                roleNames
         );
 
         // Build response
@@ -65,7 +72,7 @@ public class RefreshTokenUseCase extends UseCaseAdvance<String, AuthResponse> {
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .role(user.getRole())
+                .roles(user.getRoles())
                 .status(user.getStatus())
                 .createdAt(user.getCreatedAt())
                 .lastLoginAt(user.getLastLoginAt())

@@ -4,7 +4,6 @@ import com.saferoute.common.dto.auth.AuthRegisterRequest;
 import com.saferoute.common.dto.auth.AuthResponse;
 import com.saferoute.common.dto.user.UserResponse;
 import com.saferoute.common.entity.UserEntity;
-import com.saferoute.common.entity.UserEntity.UserRole;
 import com.saferoute.common.entity.UserEntity.UserStatus;
 import com.saferoute.common.repository.UserRepository;
 import com.saferoute.common.service.JwtService;
@@ -15,6 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Use case for user registration.
@@ -38,29 +40,38 @@ public class RegisterUseCase extends UseCaseAdvance<AuthRegisterRequest, AuthRes
 
     @Override
     protected AuthResponse core(AuthRegisterRequest request) {
-        // Create new user
+        // Create new user with roles
+        Set<UserEntity.UserRole> roles = request.roles() != null && !request.roles().isEmpty()
+                ? request.roles()
+                : Set.of(UserEntity.UserRole.GUARDIAN);  // Default role
+        
         UserEntity user = UserEntity.builder()
                 .email(request.email())
                 .passwordHash(passwordEncoder.encode(request.password()))
                 .name(request.name())
-                .role(request.role() != null ? request.role() : UserRole.GUARDIAN)
+                .roles(roles)
                 .status(UserStatus.ACTIVE)
                 .build();
 
         UserEntity savedUser = userRepository.save(user);
         log.info("New user registered: {}", savedUser.getEmail());
 
-        // Generate tokens
+        // Get roles as Set<String>
+        Set<String> roleNames = savedUser.getRoles().stream()
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+
+        // Generate tokens with roles
         String accessToken = jwtService.generateAccessToken(
                 savedUser.getId(),
                 savedUser.getEmail(),
-                savedUser.getRole().name()
+                roleNames
         );
 
         String refreshToken = jwtService.generateRefreshToken(
                 savedUser.getId(),
                 savedUser.getEmail(),
-                savedUser.getRole().name()
+                roleNames
         );
 
         // Build response
@@ -68,7 +79,7 @@ public class RegisterUseCase extends UseCaseAdvance<AuthRegisterRequest, AuthRes
                 .id(savedUser.getId())
                 .email(savedUser.getEmail())
                 .name(savedUser.getName())
-                .role(savedUser.getRole())
+                .roles(savedUser.getRoles())
                 .status(savedUser.getStatus())
                 .createdAt(savedUser.getCreatedAt())
                 .lastLoginAt(savedUser.getLastLoginAt())
