@@ -88,7 +88,7 @@ Leyenda:
 
 ### 2.1 users
 
-**Descripción:** Tabla principal de usuarios del sistema
+**Descripción:** Tabla principal de usuarios del sistema (cuenta de autenticación)
 
 | Campo | Tipo | Restricciones | Descripción |
 |-------|------|---------------|-------------|
@@ -96,16 +96,22 @@ Leyenda:
 | email | VARCHAR(255) | UNIQUE, NOT NULL | Email del usuario |
 | password_hash | VARCHAR(255) | NOT NULL | Hash de contraseña |
 | name | VARCHAR(255) | NOT NULL | Nombre completo |
-| role | VARCHAR(20) | NOT NULL, CHECK IN ('ADMIN', 'DRIVER', 'GUARDIAN') | Rol del usuario |
+| roles | SET(VARCHAR) | NOT NULL, CHECK IN ('ADMIN', 'DRIVER', 'GUARDIAN') | Roles del usuario (soporta multi-rol) |
 | status | VARCHAR(20) | NOT NULL, DEFAULT 'ACTIVE', CHECK IN ('ACTIVE', 'INACTIVE', 'DELETED') | Estado del usuario |
 | created_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
 | last_login_at | TIMESTAMP | NULL | Último login |
 
+**Nota:** Un usuario puede tener múltiples roles. Ejemplo: DRIVER + GUARDIAN para un padre que también trabaja como conductor.
+
 **Índices:**
 ```sql
 CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_role ON users(role);
 CREATE INDEX idx_users_status ON users(status);
+CREATE TABLE user_roles (
+    user_id UUID REFERENCES users(id),
+    role VARCHAR(20),
+    PRIMARY KEY (user_id, role)
+);
 ```
 
 ---
@@ -297,11 +303,12 @@ CREATE INDEX idx_student_nfc_active ON student_nfc(student_id, is_active);
 
 ### 2.4 guardians
 
-**Descripción:** Acudientes/Padres de estudiantes
+**Descripción:** Acudientes/Padres de estudiantes (perfil extendido del usuario)
 
 | Campo | Tipo | Restricciones | Descripción |
 |-------|------|---------------|-------------|
 | id | UUID | PK, NOT NULL | Identificador único |
+| user_id | UUID | FK → users(id), UNIQUE, NULL | Referencia al usuario (opcional - permite crear guardian sin cuenta) |
 | name | VARCHAR(255) | NOT NULL | Nombre del acudiente |
 | phone | VARCHAR(20) | NOT NULL | Teléfono móvil |
 | email | VARCHAR(255) | NULL | Email (opcional) |
@@ -317,10 +324,13 @@ CREATE INDEX idx_student_nfc_active ON student_nfc(student_id, is_active);
 | created_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
 | updated_at | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de actualización |
 
+**Nota:** Un guardian puede tener un usuario asociado (si tiene rol GUARDIAN) o no (para padres que solo reciben notificaciones).
+
 **Índices:**
 ```sql
 CREATE INDEX idx_guardians_phone ON guardians(phone);
 CREATE INDEX idx_guardians_email ON guardians(email);
+CREATE INDEX idx_guardians_user_id ON guardians(user_id);
 ```
 
 ---

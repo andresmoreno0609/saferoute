@@ -45,7 +45,8 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
 - El **email debe ser único** en todo el sistema
 - El **password se almacena encriptado** con BCrypt
 - El **status** puede ser: `ACTIVE`, `INACTIVE`, `DELETED`
-- El **rol** puede ser: `ADMIN`, `DRIVER`, `GUARDIAN`
+- Los **roles** pueden ser: `ADMIN`, `DRIVER`, `GUARDIAN` (soporta multi-rol)
+- Un usuario puede tener **múltiples roles** (ej: DRIVER + GUARDIAN)
 - Un usuario **soft-deleted** no puede iniciar sesión
 - El **email no se puede modificar** después de creado
 
@@ -57,7 +58,7 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
   "email": "usuario@ejemplo.com",
   "password": "password123",
   "name": "Juan Perez",
-  "role": "ADMIN"
+  "roles": ["DRIVER", "GUARDIAN"]
 }
 ```
 
@@ -67,7 +68,7 @@ Este documento describe las funcionalidades, reglas de negocio y flujos de cada 
   "id": "uuid",
   "email": "usuario@ejemplo.com",
   "name": "Juan Perez",
-  "role": "ADMIN",
+  "roles": ["DRIVER", "GUARDIAN"],
   "status": "ACTIVE",
   "createdAt": "2024-01-01T00:00:00Z",
   "lastLoginAt": null

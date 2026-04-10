@@ -20,6 +20,10 @@ public class GuardianEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", unique = true)
+    private UserEntity user;
+
     @Column(nullable = false)
     private String name;
 

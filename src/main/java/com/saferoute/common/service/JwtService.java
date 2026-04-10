@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Service for JWT token generation and validation.
@@ -28,30 +27,30 @@ public class JwtService {
     private long refreshTokenExpiration;
 
     /**
-     * Generate an access token for a user.
+     * Generate an access token for a user with multiple roles.
      */
-    public String generateAccessToken(UUID userId, String email, String role) {
-        return buildToken(userId, email, role, accessTokenExpiration);
+    public String generateAccessToken(UUID userId, String email, Set<String> roles) {
+        return buildToken(userId, email, roles, accessTokenExpiration);
     }
 
     /**
-     * Generate a refresh token for a user.
+     * Generate a refresh token for a user with multiple roles.
      */
-    public String generateRefreshToken(UUID userId, String email, String role) {
-        return buildToken(userId, email, role, refreshTokenExpiration);
+    public String generateRefreshToken(UUID userId, String email, Set<String> roles) {
+        return buildToken(userId, email, roles, refreshTokenExpiration);
     }
 
     /**
      * Build a JWT token with the given claims.
      */
-    private String buildToken(UUID userId, String email, String role, long expiration) {
+    private String buildToken(UUID userId, String email, Set<String> roles, long expiration) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
                 .subject(userId.toString())
                 .claim("email", email)
-                .claim("role", role)
+                .claim("roles", new ArrayList<>(roles))  // Set to List for JWT
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey())
@@ -81,10 +80,21 @@ public class JwtService {
     }
 
     /**
-     * Extract role from token.
+     * Extract roles from token (returns Set).
+     */
+    @SuppressWarnings("unchecked")
+    public Set<String> extractRoles(String token) {
+        List<String> rolesList = extractClaim(token, "roles", List.class);
+        return rolesList != null ? new HashSet<>(rolesList) : Collections.emptySet();
+    }
+
+    /**
+     * Extract primary role from token (first role in the set).
+     * For backwards compatibility.
      */
     public String extractRole(String token) {
-        return extractClaim(token, "role", String.class);
+        Set<String> roles = extractRoles(token);
+        return roles.isEmpty() ? null : roles.iterator().next();
     }
 
     /**

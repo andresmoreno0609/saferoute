@@ -18,7 +18,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * JWT Authentication Filter - validates JWT tokens on each request.
@@ -41,11 +43,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(jwt) && jwtService.validateToken(jwt)) {
                 String userId = jwtService.extractUserId(jwt).toString();
                 String email = jwtService.extractEmail(jwt);
-                String role = jwtService.extractRole(jwt);
+                Set<String> roles = jwtService.extractRoles(jwt);
 
-                List<SimpleGrantedAuthority> authorities = List.of(
-                        new SimpleGrantedAuthority("ROLE_" + role)
-                );
+                // Convert roles to authorities with ROLE_ prefix
+                Set<SimpleGrantedAuthority> authorities = roles.stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .collect(Collectors.toSet());
 
                 UserDetails userDetails = User.builder()
                         .username(userId)
@@ -65,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.debug("Set authentication for user: {}, role: {}", email, role);
+                log.debug("Set authentication for user: {}, roles: {}", email, roles);
             }
         } catch (Exception ex) {
             log.error("Could not set user authentication in security context", ex);

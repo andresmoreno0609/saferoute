@@ -3,6 +3,7 @@ package com.saferoute.common.service;
 import com.saferoute.common.dto.user.UserRequest;
 import com.saferoute.common.dto.user.UserResponse;
 import com.saferoute.common.entity.UserEntity;
+import com.saferoute.common.entity.UserEntity.UserRole;
 import com.saferoute.common.entity.UserEntity.UserStatus;
 import com.saferoute.common.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -37,22 +39,22 @@ public class UserService extends BaseCrudService<UserEntity, UserRequest, UserRe
                 .email(request.email())
                 .passwordHash(passwordEncoder.encode(request.password()))
                 .name(request.name())
-                .role(request.role())
-                .status(request.status() != null ? request.status() : UserStatus.ACTIVE)
+                .roles(request.roles() != null ? request.roles() : Set.of())
+                .status(UserStatus.ACTIVE)
                 .build();
     }
 
     @Override
     protected UserResponse toResponse(UserEntity entity) {
-        return new UserResponse(
-                entity.getId(),
-                entity.getEmail(),
-                entity.getName(),
-                entity.getRole(),
-                entity.getStatus(),
-                entity.getCreatedAt(),
-                entity.getLastLoginAt()
-        );
+        return UserResponse.builder()
+                .id(entity.getId())
+                .email(entity.getEmail())
+                .name(entity.getName())
+                .roles(entity.getRoles())
+                .status(entity.getStatus())
+                .createdAt(entity.getCreatedAt())
+                .lastLoginAt(entity.getLastLoginAt())
+                .build();
     }
 
     @Override
@@ -63,11 +65,11 @@ public class UserService extends BaseCrudService<UserEntity, UserRequest, UserRe
         if (request.name() != null) {
             entity.setName(request.name());
         }
-        if (request.role() != null) {
-            entity.setRole(request.role());
+        if (request.roles() != null && !request.roles().isEmpty()) {
+            entity.setRoles(request.roles());
         }
-        if (request.status() != null) {
-            entity.setStatus(request.status());
+        if (request.email() != null) {  // Keep status handling
+            entity.setStatus(UserStatus.ACTIVE);
         }
         // Password is handled separately for security
         if (request.password() != null && !request.password().isBlank()) {
@@ -101,5 +103,34 @@ public class UserService extends BaseCrudService<UserEntity, UserRequest, UserRe
             user.setLastLoginAt(java.time.LocalDateTime.now());
             userRepository.save(user);
         });
+    }
+
+    /**
+     * Add a role to a user.
+     */
+    public void addRole(UUID userId, UserRole role) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        user.addRole(role);
+        userRepository.save(user);
+    }
+
+    /**
+     * Remove a role from a user.
+     */
+    public void removeRole(UUID userId, UserRole role) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        user.removeRole(role);
+        userRepository.save(user);
+    }
+
+    /**
+     * Check if user has a specific role.
+     */
+    public boolean hasRole(UUID userId, UserRole role) {
+        return userRepository.findById(userId)
+                .map(user -> user.hasRole(role))
+                .orElse(false);
     }
 }
