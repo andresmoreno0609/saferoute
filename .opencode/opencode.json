@@ -1,14 +1,13 @@
 {
   "contextPaths": [
-    "README.md",
-    "docs/contextArchitecture.md",
-    "docs/contextPostGIS.md",
-    "docs/contextFeatures.md",
-    "docs/contextDatabase.md",
-    "docs/contextAPI.md",
-    "docs/contextNFC.md",
-    "docs/contextGeneral.md",
-    "docs/contextAuth.md",
+    "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/README.md",
+    "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/01-general/app-overview.md",
+    "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/01-general/stack.md",
+    "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/02-backend/architecture.md",
+    "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/02-backend/postgis.md",
+    "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/04-database/schema.md",
+    "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/04-database/nfc.md",
+    "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/05-shared/api-contracts.md",
     "opencode.md"
   ],
   "ignorePatterns": [
