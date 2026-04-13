@@ -3,6 +3,8 @@ package com.saferoute.guardian.controller;
 import com.saferoute.common.dto.guardian.GuardianRequest;
 import com.saferoute.common.dto.guardian.GuardianResponse;
 import com.saferoute.guardian.adapter.GuardianAdapter;
+import com.saferoute.guardian.usecase.BecomeGuardianFromUserUseCase;
+import com.saferoute.guardian.usecase.BecomeGuardianFromUserRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,6 +31,35 @@ import java.util.UUID;
 public class GuardianController {
 
     private final GuardianAdapter guardianAdapter;
+    private final BecomeGuardianFromUserUseCase becomeGuardianFromUserUseCase;
+
+    /**
+     * POST /api/v1/guardians/from-user/{userId}
+     * Permite a un usuario existente convertirse en acudiente.
+     * Agrega el rol GUARDIAN al usuario y crea el perfil de acudiente.
+     */
+    @Operation(summary = "Volverse acudiente", description = "Un usuario se convierte en acudiente. Agrega rol GUARDIAN y crea perfil.")
+    @PostMapping("/from-user/{userId}")
+    public ResponseEntity<GuardianResponse> becomeGuardian(
+            @PathVariable UUID userId,
+            @Valid @RequestBody BecomeGuardianFromUserRequest request) {
+        log.info("POST /api/v1/guardians/from-user/{} - User becoming guardian", userId);
+        // Override the userId in request with path variable
+        BecomeGuardianFromUserRequest fullRequest = new BecomeGuardianFromUserRequest(
+                userId,
+                request.name(),
+                request.phone(),
+                request.email(),
+                request.documentNumber(),
+                request.address(),
+                request.emergencyContact(),
+                request.emergencyPhone(),
+                request.occupation(),
+                request.workPhone()
+        );
+        GuardianResponse guardian = becomeGuardianFromUserUseCase.execute(fullRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(guardian);
+    }
 
     /**
      * GET /api/v1/guardians

@@ -4,6 +4,8 @@ import com.saferoute.common.dto.driver.DriverRequest;
 import com.saferoute.common.dto.driver.DriverResponse;
 import com.saferoute.common.service.DriverAvailabilityService;
 import com.saferoute.driver.adapter.DriverAdapter;
+import com.saferoute.driver.usecase.BecomeDriverFromUserUseCase;
+import com.saferoute.driver.usecase.BecomeDriverFromUserRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,6 +33,41 @@ public class DriverController {
 
     private final DriverAdapter driverAdapter;
     private final DriverAvailabilityService driverAvailabilityService;
+    private final BecomeDriverFromUserUseCase becomeDriverFromUserUseCase;
+
+    /**
+     * POST /api/v1/drivers/from-user/{userId}
+     * Permite a un usuario existente convertirse en conductor.
+     * Agrega el rol DRIVER al usuario y crea el perfil de conductor.
+     */
+    @Operation(summary = "Volverse conductor", description = "Un usuario se convierte en conductor. Agrega rol DRIVER y crea perfil.")
+    @PostMapping("/from-user/{userId}")
+    public ResponseEntity<DriverResponse> becomeDriver(
+            @PathVariable UUID userId,
+            @Valid @RequestBody BecomeDriverFromUserRequest request) {
+        log.info("POST /api/v1/drivers/from-user/{} - User becoming driver", userId);
+        // Override the userId in request with path variable
+        BecomeDriverFromUserRequest fullRequest = new BecomeDriverFromUserRequest(
+                userId,
+                request.name(),
+                request.phone(),
+                request.documentNumber(),
+                request.birthDate(),
+                request.address(),
+                request.licenseNumber(),
+                request.licenseCategory(),
+                request.licenseExpirationDate(),
+                request.emergencyContact(),
+                request.emergencyPhone(),
+                request.yearsExperience(),
+                request.photoUrl(),
+                request.bankName(),
+                request.bankAccount(),
+                request.vehicleId()
+        );
+        DriverResponse driver = becomeDriverFromUserUseCase.execute(fullRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(driver);
+    }
 
     /**
      * GET /api/v1/drivers
