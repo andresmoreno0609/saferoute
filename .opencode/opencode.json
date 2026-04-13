@@ -1,0 +1,21 @@
+{
+  "contextPaths": [
+    "README.md",
+    "docs/contextArchitecture.md",
+    "docs/contextPostGIS.md",
+    "docs/contextFeatures.md",
+    "docs/contextDatabase.md",
+    "docs/contextAPI.md",
+    "docs/contextNFC.md",
+    "docs/contextGeneral.md",
+    "docs/contextAuth.md",
+    "opencode.md"
+  ],
+  "ignorePatterns": [
+    "node_modules/",
+    "target/",
+    ".git/",
+    "*.class",
+    "*.jar"
+  ]
+}
