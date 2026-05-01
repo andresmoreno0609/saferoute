@@ -50,7 +50,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@saferoute.com\",\n  \"password\": \"admin123\",\n  \"name\": \"Administrador\",\n  \"role\": \"ADMIN\"\n}"
+              "raw": "{\n  \"email\": \"admin@saferoute.com\",\n  \"password\": \"admin123\",\n  \"name\": \"Administrador\",\n  \"roles\": [\"ADMIN\"]\n}"
             }
           }
         },
@@ -300,6 +300,40 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Juan Pérez\",\n  \"phone\": \"+573001234567\",\n  \"documentNumber\": \"1234567890\",\n  \"birthDate\": \"1990-05-15\",\n  \"address\": \"Calle 123, Bogotá\",\n  \"licenseNumber\": \"12345678\",\n  \"licenseCategory\": \"B\",\n  \"licenseExpirationDate\": \"2028-05-15\",\n  \"emergencyContact\": \"María Pérez\",\n  \"emergencyPhone\": \"+573001234568\",\n  \"yearsExperience\": 5,\n  \"photoUrl\": \"https://storage.example.com/driver-photo.jpg\",\n  \"bankName\": \"NEQUI\",\n  \"bankAccount\": \"3101234567\",\n  \"vehicleId\": \"UUID_DEL_VEHICULO\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Obtener Conductor por UserId",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/drivers/user/USER_ID",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Actualizar Info Validate",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/drivers/ID/info-validate",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"infoValidate\": true\n}"
             }
           }
         }
@@ -574,6 +608,40 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Pedro García\",\n  \"phone\": \"+573001234567\",\n  \"email\": \"pedro@email.com\",\n  \"documentNumber\": \"12345678\",\n  \"address\": \"Calle 123 #45-67, Bogotá\",\n  \"emergencyContact\": \"María García\",\n  \"emergencyPhone\": \"+573009876543\",\n  \"occupation\": \"Ingeniero\",\n  \"workPhone\": \"+5712345678\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Obtener Acudiente por UserId",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/guardians/user/USER_ID",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Actualizar Info Validate",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/guardians/ID/info-validate",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"infoValidate\": true\n}"
             }
           }
         }
