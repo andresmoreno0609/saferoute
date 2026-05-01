@@ -2,6 +2,7 @@ package com.saferoute.driver.adapter;
 
 import com.saferoute.common.dto.driver.DriverRequest;
 import com.saferoute.common.dto.driver.DriverResponse;
+import com.saferoute.common.service.DriverService;
 import com.saferoute.driver.usecase.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ public class DriverAdapter {
     private final CreateDriverUseCase createDriverUseCase;
     private final UpdateDriverUseCase updateDriverUseCase;
     private final DeleteDriverUseCase deleteDriverUseCase;
+    private final DriverService driverService;
 
     /**
      * Get all drivers.
@@ -59,5 +61,19 @@ public class DriverAdapter {
      */
     public void delete(UUID id) {
         deleteDriverUseCase.execute(id);
+    }
+
+    /**
+     * Get driver by user ID.
+     */
+    public DriverResponse getByUserId(UUID userId) {
+        return driverService.findByUserId(userId);
+    }
+
+    /**
+     * Update info validate status.
+     */
+    public DriverResponse updateInfoValidate(UUID id, Boolean infoValidate) {
+        return driverService.updateInfoValidate(id, infoValidate);
     }
 }

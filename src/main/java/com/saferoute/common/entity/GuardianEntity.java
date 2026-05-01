@@ -60,6 +60,10 @@ public class GuardianEntity {
     @Column(name = "work_phone", length = 20)
     private String workPhone;
 
+    @Column(name = "info_validate", nullable = false)
+    @Builder.Default
+    private Boolean infoValidate = false;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

@@ -76,6 +76,10 @@ public class DriverEntity {
     @Builder.Default
     private List<DriverDocumentEntity> documents = new ArrayList<>();
 
+    @Column(name = "info_validate", nullable = false)
+    @Builder.Default
+    private Boolean infoValidate = false;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

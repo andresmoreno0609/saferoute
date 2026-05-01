@@ -58,6 +58,7 @@ public class GuardianService extends BaseCrudService<GuardianEntity, GuardianReq
                 .emergencyPhone(entity.getEmergencyPhone())
                 .occupation(entity.getOccupation())
                 .workPhone(entity.getWorkPhone())
+                .infoValidate(entity.getInfoValidate())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
@@ -108,5 +109,19 @@ public class GuardianService extends BaseCrudService<GuardianEntity, GuardianReq
                 .orElseThrow(() -> new EntityNotFoundException("Guardian not found: " + guardianId));
         guardian.setFcmToken(fcmToken);
         guardianRepository.save(guardian);
+    }
+
+    public GuardianResponse findByUserId(UUID userId) {
+        GuardianEntity guardian = guardianRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Guardian not found for user: " + userId));
+        return toResponse(guardian);
+    }
+
+    public GuardianResponse updateInfoValidate(UUID id, Boolean infoValidate) {
+        GuardianEntity guardian = guardianRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Guardian not found: " + id));
+        guardian.setInfoValidate(infoValidate);
+        GuardianEntity saved = guardianRepository.save(guardian);
+        return toResponse(saved);
     }
 }

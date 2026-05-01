@@ -21,6 +21,7 @@ public record GuardianResponse(
     String emergencyPhone,
     String occupation,
     String workPhone,
+    Boolean infoValidate,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {}

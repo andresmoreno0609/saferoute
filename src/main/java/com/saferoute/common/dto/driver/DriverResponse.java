@@ -30,6 +30,7 @@ public record DriverResponse(
     UUID vehicleId,
     VehicleResponse vehicle,
     List<DriverDocumentResponse> documents,
+    Boolean infoValidate,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {}

@@ -147,4 +147,37 @@ public class GuardianController {
      * Request record for FCM token update.
      */
     public record FcmTokenRequest(String token) {}
+
+    /**
+     * GET /api/v1/guardians/user/{userId}
+     * Obtiene un acudiente por el ID del usuario.
+     */
+    @Operation(summary = "Obtener acudiente por userId", description = "Retorna el perfil de un acudiente vinculado al usuario.")
+    @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN', 'DRIVER')")
+    public ResponseEntity<GuardianResponse> getByUserId(@PathVariable UUID userId) {
+        log.info("GET /api/v1/guardians/user/{} - Fetching guardian by userId", userId);
+        GuardianResponse guardian = guardianAdapter.getByUserId(userId);
+        return ResponseEntity.ok(guardian);
+    }
+
+    /**
+     * PUT /api/v1/guardians/{id}/info-validate
+     * Actualiza el estado de validación de información del perfil.
+     */
+    @Operation(summary = "Actualizar validación de información", description = "Marca si la información del perfil está completa o validada.")
+    @PutMapping("/{id}/info-validate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<GuardianResponse> updateInfoValidate(
+            @PathVariable UUID id,
+            @RequestBody InfoValidateRequest request) {
+        log.info("PUT /api/v1/guardians/{}/info-validate - Updating infoValidate to {}", id, request.infoValidate());
+        GuardianResponse guardian = guardianAdapter.updateInfoValidate(id, request.infoValidate());
+        return ResponseEntity.ok(guardian);
+    }
+
+    /**
+     * Request record for info validate update.
+     */
+    public record InfoValidateRequest(Boolean infoValidate) {}
 }

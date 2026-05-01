@@ -118,7 +118,132 @@ Response (200):
 
 ---
 
-## 3. Estudiantes
+## 3. Acudientes
+
+### 3.1 Obtener Acudiente por User ID
+
+```
+GET /guardians/user/{userId}
+
+Headers:
+Authorization: Bearer <accessToken>
+
+Response (200):
+{
+  "id": "uuid",
+  "name": "Juan García",
+  "phone": "+573001234567",
+  "email": "juan@email.com",
+  "fcmToken": null,
+  "documentNumber": "12345678",
+  "birthDate": "1990-05-15",
+  "address": "Calle 123 #45-67, Bogotá",
+  "photoUrl": null,
+  "emergencyContact": "María García",
+  "emergencyPhone": "+573009876543",
+  "occupation": "Ingeniero",
+  "workPhone": "+5712345678",
+  "infoValidate": false,  // Indica si el perfil está completo/validado
+  "createdAt": "2026-04-13T10:00:00Z",
+  "updatedAt": "2026-04-13T10:00:00Z"
+}
+```
+
+### 3.2 Actualizar Validación de Información
+
+```
+PUT /guardians/{id}/info-validate
+
+Headers:
+Authorization: Bearer <accessToken>
+
+Request:
+{
+  "infoValidate": true
+}
+
+Response (200):
+{
+  "id": "uuid",
+  "name": "Juan García",
+  "phone": "+573001234567",
+  ...
+  "infoValidate": true,
+  ...
+}
+```
+
+**Nota:** El campo `infoValidate` indica si el perfil del acudiente está completo y validado. Por defecto es `false` al crear.
+
+---
+
+## 4. Conductores
+
+### 4.1 Obtener Conductor por User ID
+
+```
+GET /drivers/user/{userId}
+
+Headers:
+Authorization: Bearer <accessToken>
+
+Response (200):
+{
+  "id": "uuid",
+  "userId": "uuid-del-usuario",
+  "name": "Pedro Pérez",
+  "phone": "+573001234567",
+  "documentNumber": "12345678",
+  "birthDate": "1985-03-20",
+  "address": "Carrera 45 #67-89, Bogotá",
+  "licenseNumber": "lic-123456",
+  "licenseCategory": "B",
+  "licenseExpirationDate": "2028-03-20",
+  "emergencyContact": "Laura Pérez",
+  "emergencyPhone": "+573009876543",
+  "yearsExperience": 5,
+  "photoUrl": null,
+  "bankName": "BANCOLOMBIA",
+  "bankAccount": "1234567890",
+  "vehicleId": null,
+  "vehicle": null,
+  "documents": [],
+  "infoValidate": false,  // Indica si el perfil está completo/validado
+  "createdAt": "2026-04-13T10:00:00Z",
+  "updatedAt": "2026-04-13T10:00:00Z"
+}
+```
+
+### 4.2 Actualizar Validación de Información
+
+```
+PUT /drivers/{id}/info-validate
+
+Headers:
+Authorization: Bearer <accessToken>
+
+Request:
+{
+  "infoValidate": true
+}
+
+Response (200):
+{
+  "id": "uuid",
+  "name": "Pedro Pérez",
+  ...
+  "infoValidate": true,
+  ...
+}
+```
+
+**Nota:** El campo `infoValidate` indica si el perfil del conductor está completo y validado. Por defecto es `false` al crear.
+
+---
+
+## 5. Estudiantes
+
+### 5.1 Crear Estudiante
 
 ### 3.1 Crear Estudiante
 

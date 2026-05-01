@@ -2,6 +2,7 @@ package com.saferoute.guardian.adapter;
 
 import com.saferoute.common.dto.guardian.GuardianRequest;
 import com.saferoute.common.dto.guardian.GuardianResponse;
+import com.saferoute.common.service.GuardianService;
 import com.saferoute.guardian.usecase.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class GuardianAdapter {
     private final UpdateGuardianUseCase updateGuardianUseCase;
     private final DeleteGuardianUseCase deleteGuardianUseCase;
     private final UpdateFcmTokenUseCase updateFcmTokenUseCase;
+    private final GuardianService guardianService;
 
     /**
      * Get all guardians.
@@ -69,5 +71,19 @@ public class GuardianAdapter {
         return updateFcmTokenUseCase.execute(
             new com.saferoute.guardian.usecase.UpdateFcmTokenRequest(id, token)
         );
+    }
+
+    /**
+     * Get guardian by user ID.
+     */
+    public GuardianResponse getByUserId(UUID userId) {
+        return guardianService.findByUserId(userId);
+    }
+
+    /**
+     * Update info validate status.
+     */
+    public GuardianResponse updateInfoValidate(UUID id, Boolean infoValidate) {
+        return guardianService.updateInfoValidate(id, infoValidate);
     }
 }
