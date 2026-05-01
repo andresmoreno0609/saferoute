@@ -51,7 +51,7 @@ public class AuthAdapter {
     /**
      * Get current authenticated user.
      */
-    public AuthResponse getCurrentUser() {
+    public UserInfoResponse getCurrentUser() {
         return getCurrentUserUseCase.execute(null);
     }
 }

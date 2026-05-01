@@ -76,11 +76,11 @@ public class AuthController {
      * GET /api/v1/auth/me
      * Obtiene los datos del usuario autenticado.
      */
-    @Operation(summary = "Usuario actual", description = "Retorna los datos del usuario autenticado actualmente.")
+    @Operation(summary = "Usuario actual", description = "Retorna los datos del usuario autenticado actualmente (sin tokens).")
     @GetMapping("/me")
-    public ResponseEntity<AuthResponse> getCurrentUser() {
+    public ResponseEntity<UserInfoResponse> getCurrentUser() {
         log.info("Get current user request");
-        AuthResponse response = authAdapter.getCurrentUser();
+        UserInfoResponse response = authAdapter.getCurrentUser();
         return ResponseEntity.ok(response);
     }
 }

@@ -1,10 +1,9 @@
 package com.saferoute.auth.usecase;
 
-import com.saferoute.common.dto.auth.AuthResponse;
+import com.saferoute.common.dto.auth.UserInfoResponse;
 import com.saferoute.common.dto.user.UserResponse;
 import com.saferoute.common.entity.UserEntity;
 import com.saferoute.common.repository.UserRepository;
-import com.saferoute.common.service.JwtService;
 import com.saferoute.common.usecase.UseCaseAdvance;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -21,13 +19,12 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class GetCurrentUserUseCase extends UseCaseAdvance<Void, AuthResponse> {
+public class GetCurrentUserUseCase extends UseCaseAdvance<Void, UserInfoResponse> {
 
     private final UserRepository userRepository;
-    private final JwtService jwtService;
 
     @Override
-    protected AuthResponse core(Void request) {
+    protected UserInfoResponse core(Void request) {
         // Get authentication from security context
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -43,23 +40,6 @@ public class GetCurrentUserUseCase extends UseCaseAdvance<Void, AuthResponse> {
         UserEntity user = userRepository.findById(uuid)
                 .orElseThrow(() -> new IllegalStateException("User not found: " + userId));
 
-        // Generate tokens with roles
-        Set<String> roleNames = user.getRoles().stream()
-                .map(Enum::name)
-                .collect(java.util.stream.Collectors.toSet());
-        
-        String accessToken = jwtService.generateAccessToken(
-                user.getId(),
-                user.getEmail(),
-                roleNames
-        );
-
-        String refreshToken = jwtService.generateRefreshToken(
-                user.getId(),
-                user.getEmail(),
-                roleNames
-        );
-
         // Build response
         UserResponse userResponse = UserResponse.builder()
                 .id(user.getId())
@@ -71,11 +51,6 @@ public class GetCurrentUserUseCase extends UseCaseAdvance<Void, AuthResponse> {
                 .lastLoginAt(user.getLastLoginAt())
                 .build();
 
-        return new AuthResponse(
-                accessToken,
-                refreshToken,
-                jwtService.getAccessTokenExpirationSeconds(),
-                userResponse
-        );
+        return new UserInfoResponse(userResponse);
     }
 }

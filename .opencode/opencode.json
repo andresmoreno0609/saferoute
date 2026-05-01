@@ -1,5 +1,6 @@
 {
-  "contextPaths": [
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
     "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/README.md",
     "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/01-general/app-overview.md",
     "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/01-general/stack.md",
@@ -10,11 +11,26 @@
     "https://raw.githubusercontent.com/andresmoreno0609/ai-saferoute-context/main/05-shared/api-contracts.md",
     "opencode.md"
   ],
-  "ignorePatterns": [
-    "node_modules/",
-    "target/",
-    ".git/",
-    "*.class",
-    "*.jar"
-  ]
+  "watcher": {
+    "ignore": [
+      "node_modules/",
+      "target/",
+      ".git/",
+      "*.class",
+      "*.jar"
+    ]
+  },
+  "mcp": {
+    "postman": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@postman/postman-mcp-server"
+      ],
+      "env": {
+        "POSTMAN_API_KEY": "${env:POSTMAN_API_KEY}"
+      }
+    }
+  }
 }

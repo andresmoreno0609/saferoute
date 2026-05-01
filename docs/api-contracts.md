@@ -50,7 +50,7 @@ Request:
   "email": "user@example.com",
   "password": "password123",
   "name": "Juan Pérez",
-  "phone": "+573001234567"
+  "roles": ["GUARDIAN"]  // o ["DRIVER"], ["ADMIN"]
 }
 
 Response (201):
@@ -63,10 +63,15 @@ Response (201):
     "id": "uuid",
     "email": "user@example.com",
     "name": "Juan Pérez",
-    "roles": ["GUARDIAN"]
+    "roles": ["GUARDIAN"],
+    "status": "ACTIVE",
+    "createdAt": "2026-04-13T10:00:00Z",
+    "lastLoginAt": null
   }
 }
 ```
+
+**Nota:** Al registrar con rol GUARDIAN o DRIVER, se crea automáticamente el perfil correspondiente en las tablas `guardians` o `drivers`.
 
 ### 2.3 Refresh Token
 
@@ -86,6 +91,30 @@ Response (200):
   "expiresIn": 3600
 }
 ```
+
+### 2.4 Usuario Actual (Mi Perfil)
+
+```
+GET /auth/me
+
+Headers:
+Authorization: Bearer <accessToken>
+
+Response (200):
+{
+  "user": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "name": "Juan Pérez",
+    "roles": ["GUARDIAN"],
+    "status": "ACTIVE",
+    "createdAt": "2026-04-13T10:00:00Z",
+    "lastLoginAt": "2026-04-14T08:00:00Z"
+  }
+}
+```
+
+**Nota:** Este endpoint retorna solo información del usuario (sin tokens), ya que los tokens se almacenan en el cliente durante el login.
 
 ---
 
