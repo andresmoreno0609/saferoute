@@ -69,11 +69,4 @@ public class DriverAdapter {
     public DriverResponse getByUserId(UUID userId) {
         return driverService.findByUserId(userId);
     }
-
-    /**
-     * Update info validate status.
-     */
-    public DriverResponse updateInfoValidate(UUID id, Boolean infoValidate) {
-        return driverService.updateInfoValidate(id, infoValidate);
-    }
 }

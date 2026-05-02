@@ -79,11 +79,4 @@ public class GuardianAdapter {
     public GuardianResponse getByUserId(UUID userId) {
         return guardianService.findByUserId(userId);
     }
-
-    /**
-     * Update info validate status.
-     */
-    public GuardianResponse updateInfoValidate(UUID id, Boolean infoValidate) {
-        return guardianService.updateInfoValidate(id, infoValidate);
-    }
 }

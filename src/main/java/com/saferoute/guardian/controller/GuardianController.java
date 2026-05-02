@@ -162,22 +162,4 @@ public class GuardianController {
     }
 
     /**
-     * PUT /api/v1/guardians/{id}/info-validate
-     * Actualiza el estado de validación de información del perfil.
-     */
-    @Operation(summary = "Actualizar validación de información", description = "Marca si la información del perfil está completa o validada.")
-    @PutMapping("/{id}/info-validate")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<GuardianResponse> updateInfoValidate(
-            @PathVariable UUID id,
-            @RequestBody InfoValidateRequest request) {
-        log.info("PUT /api/v1/guardians/{}/info-validate - Updating infoValidate to {}", id, request.infoValidate());
-        GuardianResponse guardian = guardianAdapter.updateInfoValidate(id, request.infoValidate());
-        return ResponseEntity.ok(guardian);
-    }
-
-    /**
-     * Request record for info validate update.
-     */
-    public record InfoValidateRequest(Boolean infoValidate) {}
-}
+     }

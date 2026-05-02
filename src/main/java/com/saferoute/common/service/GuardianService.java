@@ -102,6 +102,8 @@ public class GuardianService extends BaseCrudService<GuardianEntity, GuardianReq
         if (request.workPhone() != null) {
             entity.setWorkPhone(request.workPhone());
         }
+        // Auto-confirmar que la información fue actualizada
+        entity.setInfoValidate(true);
     }
 
     public void updateFcmToken(UUID guardianId, String fcmToken) {
@@ -115,13 +117,5 @@ public class GuardianService extends BaseCrudService<GuardianEntity, GuardianReq
         GuardianEntity guardian = guardianRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Guardian not found for user: " + userId));
         return toResponse(guardian);
-    }
-
-    public GuardianResponse updateInfoValidate(UUID id, Boolean infoValidate) {
-        GuardianEntity guardian = guardianRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Guardian not found: " + id));
-        guardian.setInfoValidate(infoValidate);
-        GuardianEntity saved = guardianRepository.save(guardian);
-        return toResponse(saved);
     }
 }

@@ -162,23 +162,4 @@ public class DriverController {
         return ResponseEntity.ok(driver);
     }
 
-    /**
-     * PUT /api/v1/drivers/{id}/info-validate
-     * Actualiza el estado de validación de información del perfil.
-     */
-    @Operation(summary = "Actualizar validación de información", description = "Marca si la información del perfil está completa o validada.")
-    @PutMapping("/{id}/info-validate")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<DriverResponse> updateInfoValidate(
-            @PathVariable UUID id,
-            @RequestBody InfoValidateRequest request) {
-        log.info("PUT /api/v1/drivers/{}/info-validate - Updating infoValidate to {}", id, request.infoValidate());
-        DriverResponse driver = driverAdapter.updateInfoValidate(id, request.infoValidate());
-        return ResponseEntity.ok(driver);
     }
-
-    /**
-     * Request record for info validate update.
-     */
-    public record InfoValidateRequest(Boolean infoValidate) {}
-}

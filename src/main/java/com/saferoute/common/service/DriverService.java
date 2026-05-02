@@ -140,6 +140,8 @@ public class DriverService {
             }
             entity.setVehicle(vehicle);
         }
+        // Auto-confirmar que la información fue actualizada
+        entity.setInfoValidate(true);
 
         DriverEntity saved = driverRepository.save(entity);
         log.info("Driver updated: {}", id);
@@ -162,16 +164,6 @@ public class DriverService {
         DriverEntity entity = driverRepository.findByUserId(userId)
                 .orElseThrow(() -> new DriverNotFoundException("Driver not found for user: " + userId));
         return toResponse(entity);
-    }
-
-    @Transactional
-    public DriverResponse updateInfoValidate(UUID id, Boolean infoValidate) {
-        DriverEntity entity = driverRepository.findById(id)
-                .orElseThrow(() -> new DriverNotFoundException("Driver not found with id: " + id));
-        entity.setInfoValidate(infoValidate);
-        DriverEntity saved = driverRepository.save(entity);
-        log.info("Driver infoValidate updated: {} -> {}", id, infoValidate);
-        return toResponse(saved);
     }
 
     private DriverResponse toResponse(DriverEntity entity) {
