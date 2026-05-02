@@ -50,7 +50,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@saferoute.com\",\n  \"password\": \"admin123\",\n  \"name\": \"Administrador\",\n  \"roles\": [\"ADMIN\"]\n}"
+              "raw": "{\n  \"email\": \"test@test.com\",\n  \"password\": \"password123\",\n  \"name\": \"Usuario Test\",\n  \"roles\": [\"GUARDIAN\"]\n}"
             }
           }
         },
@@ -85,7 +85,7 @@
           }
         },
         {
-          "name": "Mi Usuario",
+          "name": "Mi Usuario (/me)",
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/auth/me",
@@ -166,7 +166,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"usuario@test.com\",\n  \"password\": \"password123\",\n  \"name\": \"Usuario Actualizado\",\n  \"role\": \"DRIVER\"\n}"
+              "raw": "{\n  \"email\": \"usuario@test.com\",\n  \"name\": \"Usuario Actualizado\"\n}"
             }
           }
         },
@@ -218,7 +218,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Juan Pérez\",\n  \"phone\": \"+573001234567\",\n  \"documentNumber\": \"1234567890\",\n  \"birthDate\": \"1990-05-15\",\n  \"address\": \"Calle 123, Bogotá\",\n  \"licenseNumber\": \"12345678\",\n  \"licenseCategory\": \"B\",\n  \"licenseExpirationDate\": \"2028-05-15\",\n  \"emergencyContact\": \"María Pérez\",\n  \"emergencyPhone\": \"+573001234568\",\n  \"yearsExperience\": 5,\n  \"photoUrl\": \"https://storage.example.com/driver-photo.jpg\",\n  \"bankName\": \"NEQUI\",\n  \"bankAccount\": \"3101234567\",\n  \"vehicleId\": \"UUID_DEL_VEHICULO\",\n  \"userId\": \"UUID_DEL_USUARIO\"\n}"
+              "raw": "{\n  \"name\": \"Juan Pérez\",\n  \"phone\": \"+573001234567\",\n  \"documentNumber\": \"1234567890\",\n  \"birthDate\": \"1990-05-15\",\n  \"address\": \"Calle 123, Bogotá\",\n  \"licenseNumber\": \"12345678\",\n  \"licenseCategory\": \"B\",\n  \"licenseExpirationDate\": \"2028-05-15\",\n  \"emergencyContact\": \"María Pérez\",\n  \"emergencyPhone\": \"+573001234568\",\n  \"yearsExperience\": 5,\n  \"bankName\": \"NEQUI\",\n  \"bankAccount\": \"3101234567\",\n  \"userId\": \"UUID_DEL_USUARIO\"\n}"
             }
           }
         },
@@ -252,7 +252,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Juan Pérez Actualizado\",\n  \"phone\": \"+573001234567\",\n  \"documentNumber\": \"1234567890\",\n  \"address\": \"Calle 456, Bogotá\",\n  \"licenseNumber\": \"12345678\",\n  \"licenseCategory\": \"B\",\n  \"licenseExpirationDate\": \"2028-05-15\",\n  \"emergencyContact\": \"María Pérez\",\n  \"emergencyPhone\": \"+573001234568\",\n  \"yearsExperience\": 6,\n  \"bankName\": \"BANCOLOMBIA\",\n  \"bankAccount\": \"1234567890\",\n  \"vehicleId\": \"UUID_DEL_VEHICULO\"\n}"
+              "raw": "{\n  \"name\": \"Juan Pérez Actualizado\",\n  \"phone\": \"+573001234567\",\n  \"address\": \"Calle 456, Bogotá\",\n  \"yearsExperience\": 6,\n  \"bankName\": \"BANCOLOMBIA\"\n}"
             }
           }
         },
@@ -299,7 +299,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Juan Pérez\",\n  \"phone\": \"+573001234567\",\n  \"documentNumber\": \"1234567890\",\n  \"birthDate\": \"1990-05-15\",\n  \"address\": \"Calle 123, Bogotá\",\n  \"licenseNumber\": \"12345678\",\n  \"licenseCategory\": \"B\",\n  \"licenseExpirationDate\": \"2028-05-15\",\n  \"emergencyContact\": \"María Pérez\",\n  \"emergencyPhone\": \"+573001234568\",\n  \"yearsExperience\": 5,\n  \"photoUrl\": \"https://storage.example.com/driver-photo.jpg\",\n  \"bankName\": \"NEQUI\",\n  \"bankAccount\": \"3101234567\",\n  \"vehicleId\": \"UUID_DEL_VEHICULO\"\n}"
+              "raw": "{\n  \"name\": \"Juan Pérez\",\n  \"phone\": \"+573001234567\",\n  \"documentNumber\": \"1234567890\",\n  \"birthDate\": \"1990-05-15\",\n  \"address\": \"Calle 123, Bogotá\",\n  \"licenseNumber\": \"12345678\",\n  \"licenseCategory\": \"B\",\n  \"licenseExpirationDate\": \"2028-05-15\",\n  \"emergencyContact\": \"María Pérez\",\n  \"emergencyPhone\": \"+573001234568\",\n  \"yearsExperience\": 5,\n  \"bankName\": \"NEQUI\",\n  \"bankAccount\": \"3101234567\"\n}"
             }
           }
         },
@@ -434,93 +434,7 @@
       ]
     },
     {
-      "name": "04. Estudiantes",
-      "item": [
-        {
-          "name": "Listar Estudiantes",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/v1/students",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ]
-          }
-        },
-        {
-          "name": "Crear Estudiante",
-          "request": {
-            "method": "POST",
-            "url": "{{baseUrl}}/api/v1/students",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"María García\",\n  \"address\": \"Calle 123, Bogotá, Colombia\",\n  \"homeLatitude\": 4.7110,\n  \"homeLongitude\": -74.0721,\n  \"schoolName\": \"Colegio San José\",\n  \"schoolLatitude\": 4.7200,\n  \"schoolLongitude\": -74.0800,\n  \"grade\": \"1°\",\n  \"birthDate\": \"2015-05-15\",\n  \"emergencyContact\": \"Juan García\",\n  \"emergencyPhone\": \"+573001234567\",\n  \"medicalInfo\": \"Alergia a frutos secos\",\n  \"studentCode\": \"EST-001\"}"
-            }
-          }
-        },
-        {
-          "name": "Obtener Estudiante",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/v1/students/ID",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ]
-          }
-        },
-        {
-          "name": "Actualizar Estudiante",
-          "request": {
-            "method": "PUT",
-            "url": "{{baseUrl}}/api/v1/students/ID",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"María García Actualizada\",\n  \"address\": \"Calle 123, Bogotá, Colombia\",\n  \"latitude\": 4.7110,\n  \"longitude\": -74.0721,\n  \"schoolName\": \"Colegio San José\",\n  \"schoolLatitude\": 4.7200,\n  \"schoolLongitude\": -74.0800\n}"
-            }
-          }
-        },
-        {
-          "name": "Eliminar Estudiante",
-          "request": {
-            "method": "DELETE",
-            "url": "{{baseUrl}}/api/v1/students/ID",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "05. Acudientes",
+      "name": "04. Acudientes",
       "item": [
         {
           "name": "Listar Acudientes",
@@ -552,7 +466,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Pedro García\",\n  \"email\": \"pedro@email.com\",\n  \"phone\": \"+573001234567\",\n  \"documentNumber\": \"12345678\",\n  \"birthDate\": \"1980-05-15\",\n  \"address\": \"Calle 123 #45-67, Bogotá\",\n  \"emergencyContact\": \"María García\",\n  \"emergencyPhone\": \"+573009876543\",\n  \"occupation\": \"Ingeniero\",\n  \"workPhone\": \"+5712345678\"}"
+              "raw": "{\n  \"name\": \"Pedro García\",\n  \"email\": \"pedro@email.com\",\n  \"phone\": \"+573001234567\",\n  \"documentNumber\": \"12345678\",\n  \"birthDate\": \"1980-05-15\",\n  \"address\": \"Calle 123 #45-67, Bogotá\",\n  \"emergencyContact\": \"María García\",\n  \"emergencyPhone\": \"+573009876543\",\n  \"occupation\": \"Ingeniero\",\n  \"workPhone\": \"+5712345678\"\n}"
             }
           }
         },
@@ -560,6 +474,40 @@
           "name": "Obtener Acudiente",
           "request": {
             "method": "GET",
+            "url": "{{baseUrl}}/api/v1/guardians/ID",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Actualizar Acudiente",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/guardians/ID",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pedro García Actualizado\",\n  \"phone\": \"+573001234567\",\n  \"address\": \"Calle 456 #78-90, Bogotá\",\n  \"occupation\": \"Arquitecto\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar Acudiente",
+          "request": {
+            "method": "DELETE",
             "url": "{{baseUrl}}/api/v1/guardians/ID",
             "header": [
               {
@@ -648,7 +596,7 @@
       ]
     },
     {
-      "name": "06. Relaciones Estudiante-Acudiente",
+      "name": "05. Relaciones Estudiante-Acudiente",
       "item": [
         {
           "name": "Listar Relaciones",
@@ -702,6 +650,92 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/student-guardians/guardian/ID_ACUDIENTE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06. Estudiantes",
+      "item": [
+        {
+          "name": "Listar Estudiantes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/students",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Crear Estudiante",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/students",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"María García\",\n  \"address\": \"Calle 123, Bogotá, Colombia\",\n  \"homeLatitude\": 4.7110,\n  \"homeLongitude\": -74.0721,\n  \"schoolName\": \"Colegio San José\",\n  \"schoolLatitude\": 4.7200,\n  \"schoolLongitude\": -74.0800,\n  \"grade\": \"1°\",\n  \"birthDate\": \"2015-05-15\",\n  \"emergencyContact\": \"Juan García\",\n  \"emergencyPhone\": \"+573001234567\",\n  \"medicalInfo\": \"Alergia a frutos secos\",\n  \"studentCode\": \"EST-001\"}"
+            }
+          }
+        },
+        {
+          "name": "Obtener Estudiante",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/students/ID",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Actualizar Estudiante",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/students/ID",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"María García Actualizada\",\n  \"address\": \"Calle 123, Bogotá, Colombia\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar Estudiante",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/students/ID",
             "header": [
               {
                 "key": "Authorization",
@@ -1195,19 +1229,6 @@
               }
             ]
           }
-        },
-        {
-          "name": "Estado de Extensiones",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/v1/routes/extensions/status",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ]
-          }
         }
       ]
     },
@@ -1335,27 +1356,6 @@
           }
         },
         {
-          "name": "Actualizar Documento del Vehículo",
-          "request": {
-            "method": "PUT",
-            "url": "{{baseUrl}}/api/v1/vehicles/ID/documents/DOC_ID",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"documentType\": \"SOAP\",\n  \"fileUrl\": \"https://storage.example.com/soap_new.pdf\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2028-01-01\"\n}"
-            }
-          }
-        },
-        {
           "name": "Verificar Documento del Vehículo",
           "request": {
             "method": "POST",
@@ -1413,7 +1413,7 @@
       ]
     },
     {
-      "name": "05. NFC",
+      "name": "15. NFC",
       "item": [
         {
           "name": "Asignar NFC a Estudiante",
