@@ -4,6 +4,7 @@ import com.saferoute.common.dto.studentguardian.StudentGuardianResponse;
 import com.saferoute.common.entity.StudentGuardianEntity;
 import com.saferoute.common.repository.StudentGuardianRepository;
 import com.saferoute.common.repository.StudentRepository;
+import com.saferoute.common.usecase.UseCaseAdvance;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,24 +25,20 @@ public class GetGuardianStudentsUseCase extends UseCaseAdvance<UUID, List<Studen
     private final StudentRepository studentRepository;
     private final VerifyGuardianOwnershipUseCase verifyOwnershipUseCase;
 
-    @Override
-    protected List<StudentGuardianResponse> core(UUID guardianId) {
-        // 1. Verificar ownership del guardian
+    public List<StudentGuardianResponse> executeForGuardian(UUID guardianId) {
         verifyOwnershipUseCase.execute(guardianId);
 
-        // 2. Obtener relaciones
         List<StudentGuardianEntity> relations = studentGuardianRepository.findByGuardianId(guardianId);
 
-        // 3. Mapear a response
         return relations.stream()
                 .map(rel -> {
-                    var student = studentRepository.findById(rel.getStudentId())
-                            .orElseThrow(() -> new EntityNotFoundException("Estudiante no encontrado: " + rel.getStudentId()));
+                    var student = studentRepository.findById(rel.getStudent().getId())
+                            .orElseThrow(() -> new EntityNotFoundException("Estudiante no encontrado"));
                     return new StudentGuardianResponse(
                             rel.getId(),
                             student.getId(),
                             student.getName(),
-                            rel.getGuardianId(),
+                            rel.getGuardian().getId(),
                             null,
                             rel.getRelationship(),
                             rel.getIsEmergencyContact(),
@@ -50,5 +47,10 @@ public class GetGuardianStudentsUseCase extends UseCaseAdvance<UUID, List<Studen
                     );
                 })
                 .toList();
+    }
+
+    @Override
+    protected List<StudentGuardianResponse> core(UUID guardianId) {
+        return executeForGuardian(guardianId);
     }
 }

@@ -4,7 +4,7 @@ import com.saferoute.common.dto.guardian.GuardianRequest;
 import com.saferoute.common.dto.guardian.GuardianResponse;
 import com.saferoute.common.dto.studentguardian.StudentGuardianResponse;
 import com.saferoute.guardian.adapter.GuardianAdapter;
-import com.saferoute.guardian.dto.GuardianStudentRequest;
+import com.saferoute.guardian.dto.GuardianStudentData;
 import com.saferoute.guardian.service.GuardianStudentService;
 import com.saferoute.guardian.usecase.BecomeGuardianFromUserUseCase;
 import com.saferoute.guardian.usecase.BecomeGuardianFromUserRequest;
@@ -176,7 +176,7 @@ public class GuardianController {
     @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<StudentGuardianResponse> createStudent(
             @PathVariable UUID guardianId,
-            @Valid @RequestBody GuardianStudentRequest request) {
+            @Valid @RequestBody GuardianStudentData request) {
         log.info("POST /api/v1/guardians/{}/students - Creating student for guardian", guardianId);
         StudentGuardianResponse response = guardianStudentService.createStudentForGuardian(guardianId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -192,7 +192,7 @@ public class GuardianController {
     public ResponseEntity<StudentGuardianResponse> updateStudent(
             @PathVariable UUID guardianId,
             @PathVariable UUID studentId,
-            @Valid @RequestBody GuardianStudentRequest request) {
+            @Valid @RequestBody GuardianStudentData request) {
         log.info("PUT /api/v1/guardians/{}/students/{} - Updating student", guardianId, studentId);
         StudentGuardianResponse response = guardianStudentService.updateStudentForGuardian(guardianId, studentId, request);
         return ResponseEntity.ok(response);
@@ -227,5 +227,4 @@ public class GuardianController {
         return ResponseEntity.ok(students);
     }
 
-    /**
-      }
+}

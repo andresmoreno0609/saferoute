@@ -2,10 +2,13 @@ package com.saferoute.guardian.usecase;
 
 import com.saferoute.common.dto.student.StudentRequest;
 import com.saferoute.common.dto.student.StudentResponse;
+import com.saferoute.common.dto.studentguardian.StudentGuardianRequest;
 import com.saferoute.common.dto.studentguardian.StudentGuardianResponse;
-import com.saferoute.common.entity.StudentGuardianEntity;
 import com.saferoute.common.repository.StudentGuardianRepository;
 import com.saferoute.common.service.StudentService;
+import com.saferoute.common.service.StudentGuardianService;
+import com.saferoute.common.usecase.UseCaseAdvance;
+import com.saferoute.guardian.dto.GuardianStudentData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,61 +21,38 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class UpdateGuardianStudentUseCase extends UseCaseAdvance<UpdateGuardianStudentRequest, StudentGuardianResponse> {
+public class UpdateGuardianStudentUseCase extends UseCaseAdvance<GuardianStudentData, StudentGuardianResponse> {
 
     private final StudentService studentService;
     private final StudentGuardianRepository studentGuardianRepository;
+    private final StudentGuardianService studentGuardianService;
     private final VerifyGuardianOwnershipUseCase verifyOwnershipUseCase;
 
-    @Override
-    protected StudentGuardianResponse core(UpdateGuardianStudentRequest request) {
-        // 1. Verificar ownership del guardian
-        verifyOwnershipUseCase.execute(request.guardianId());
+    public StudentGuardianResponse executeWithIds(UUID guardianId, UUID studentId, GuardianStudentData data) {
+        verifyOwnershipUseCase.execute(guardianId);
 
-        // 2. Verificar que el estudiante pertenece a este guardian
-        StudentGuardianEntity relation = studentGuardianRepository
-                .findByStudentIdAndGuardianId(request.studentId(), request.guardianId())
+        var relation = studentGuardianRepository.findByStudentIdAndGuardianId(studentId, guardianId)
                 .orElseThrow(() -> new IllegalArgumentException("El estudiante no pertenece a este guardian"));
 
-        // 3. Actualizar estudiante
-        StudentRequest studentRequest = new StudentRequest(
-                request.studentData().name(),
-                request.studentData().address(),
-                request.studentData().homeLatitude(),
-                request.studentData().homeLongitude(),
-                request.studentData().schoolName(),
-                request.studentData().schoolLatitude(),
-                request.studentData().schoolLongitude(),
-                request.studentData().grade(),
-                request.studentData().birthDate(),
-                request.studentData().emergencyContact(),
-                request.studentData().emergencyPhone(),
-                request.studentData().medicalInfo(),
-                request.studentData().photoUrl(),
-                request.studentData().studentCode()
+        StudentRequest studentRequest = toStudentRequest(data);
+        StudentResponse student = studentService.update(studentId, studentRequest);
+
+        StudentGuardianRequest relationRequest = new StudentGuardianRequest(
+                studentId,
+                guardianId,
+                data.relationship(),
+                booleanOrDefault(data.isEmergencyContact(), false),
+                booleanOrDefault(data.notifyEvents(), true)
         );
-        StudentResponse student = studentService.update(request.studentId(), studentRequest);
+        
+        studentGuardianService.update(relation.getId(), relationRequest);
 
-        // 4. Actualizar relación
-        relation.setRelationship(request.studentData().relationship());
-        relation.setIsEmergencyContact(booleanOrDefault(request.studentData().isEmergencyContact(), false));
-        relation.setNotifyEvents(booleanOrDefault(request.studentData().notifyEvents(), true));
-        studentGuardianRepository.save(relation);
-
-        log.info("Updated student {} for guardian {}", request.studentId(), request.guardianId());
-        return toResponse(relation, student);
-    }
-
-    private boolean booleanOrDefault(Boolean value, boolean defaultValue) {
-        return value != null ? value : defaultValue;
-    }
-
-    private StudentGuardianResponse toResponse(StudentGuardianEntity relation, StudentResponse student) {
+        log.info("Updated student {} for guardian {}", studentId, guardianId);
         return new StudentGuardianResponse(
                 relation.getId(),
                 student.id(),
                 student.name(),
-                relation.getGuardianId(),
+                guardianId,
                 null,
                 relation.getRelationship(),
                 relation.getIsEmergencyContact(),
@@ -80,6 +60,32 @@ public class UpdateGuardianStudentUseCase extends UseCaseAdvance<UpdateGuardianS
                 relation.getCreatedAt()
         );
     }
-}
 
-record UpdateGuardianStudentRequest(UUID guardianId, UUID studentId, GuardianStudentData studentData) {}
+    @Override
+    protected StudentGuardianResponse core(GuardianStudentData data) {
+        throw new UnsupportedOperationException("Use executeWithIds instead");
+    }
+
+    private StudentRequest toStudentRequest(GuardianStudentData data) {
+        return new StudentRequest(
+                data.name(),
+                data.address(),
+                data.homeLatitude(),
+                data.homeLongitude(),
+                data.schoolName(),
+                data.schoolLatitude(),
+                data.schoolLongitude(),
+                data.grade(),
+                data.birthDate(),
+                data.emergencyContact(),
+                data.emergencyPhone(),
+                data.medicalInfo(),
+                data.photoUrl(),
+                data.studentCode()
+        );
+    }
+
+    private boolean booleanOrDefault(Boolean value, boolean defaultValue) {
+        return value != null ? value : defaultValue;
+    }
+}

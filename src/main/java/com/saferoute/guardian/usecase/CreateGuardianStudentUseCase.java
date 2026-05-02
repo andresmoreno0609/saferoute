@@ -2,10 +2,12 @@ package com.saferoute.guardian.usecase;
 
 import com.saferoute.common.dto.student.StudentRequest;
 import com.saferoute.common.dto.student.StudentResponse;
+import com.saferoute.common.dto.studentguardian.StudentGuardianRequest;
 import com.saferoute.common.dto.studentguardian.StudentGuardianResponse;
-import com.saferoute.common.entity.StudentGuardianEntity;
-import com.saferoute.common.repository.StudentGuardianRepository;
 import com.saferoute.common.service.StudentService;
+import com.saferoute.common.service.StudentGuardianService;
+import com.saferoute.common.usecase.UseCaseAdvance;
+import com.saferoute.guardian.dto.GuardianStudentData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,94 +20,68 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class CreateGuardianStudentUseCase extends UseCaseAdvance<CreateGuardianStudentRequest, StudentGuardianResponse> {
+public class CreateGuardianStudentUseCase extends UseCaseAdvance<GuardianStudentData, StudentGuardianResponse> {
 
     private final StudentService studentService;
-    private final StudentGuardianRepository studentGuardianRepository;
+    private final StudentGuardianService studentGuardianService;
     private final VerifyGuardianOwnershipUseCase verifyOwnershipUseCase;
 
-    @Override
-    protected StudentGuardianResponse core(CreateGuardianStudentRequest request) {
-        // 1. Verificar ownership del guardian
-        verifyOwnershipUseCase.execute(request.guardianId());
-
-        // 2. Crear el estudiante
-        StudentRequest studentRequest = new StudentRequest(
-                request.studentData().name(),
-                request.studentData().address(),
-                request.studentData().homeLatitude(),
-                request.studentData().homeLongitude(),
-                request.studentData().schoolName(),
-                request.studentData().schoolLatitude(),
-                request.studentData().schoolLongitude(),
-                request.studentData().grade(),
-                request.studentData().birthDate(),
-                request.studentData().emergencyContact(),
-                request.studentData().emergencyPhone(),
-                request.studentData().medicalInfo(),
-                request.studentData().photoUrl(),
-                request.studentData().studentCode()
-        );
+    public StudentGuardianResponse executeWithGuardianId(UUID guardianId, GuardianStudentData data) {
+        verifyOwnershipUseCase.execute(guardianId);
+        
+        StudentRequest studentRequest = toStudentRequest(data);
         StudentResponse student = studentService.create(studentRequest);
 
-        // 3. Crear la relación
-        StudentGuardianEntity relation = studentGuardianRepository.save(
-                StudentGuardianEntity.builder()
-                        .studentId(student.id())
-                        .guardianId(request.guardianId())
-                        .relationship(request.studentData().relationship())
-                        .isEmergencyContact(booleanOrDefault(request.studentData().isEmergencyContact(), false))
-                        .notifyEvents(booleanOrDefault(request.studentData().notifyEvents(), true))
-                        .build()
+        StudentGuardianRequest relationRequest = new StudentGuardianRequest(
+                student.id(),
+                guardianId,
+                data.relationship(),
+                booleanOrDefault(data.isEmergencyContact(), false),
+                booleanOrDefault(data.notifyEvents(), true)
         );
+        
+        StudentGuardianResponse relation = studentGuardianService.create(relationRequest);
 
-        log.info("Created student {} for guardian {}", student.id(), request.guardianId());
-        return toResponse(relation, student);
+        log.info("Created student {} for guardian {}", student.id(), guardianId);
+        return new StudentGuardianResponse(
+                relation.id(),
+                student.id(),
+                student.name(),
+                relation.guardianId(),
+                null,
+                relation.relationship(),
+                relation.isEmergencyContact(),
+                relation.notifyEvents(),
+                relation.createdAt()
+        );
+    }
+
+    @Override
+    protected StudentGuardianResponse core(GuardianStudentData data) {
+        // No usado - usamos executeWithGuardianId
+        throw new UnsupportedOperationException("Use executeWithGuardianId instead");
+    }
+
+    private StudentRequest toStudentRequest(GuardianStudentData data) {
+        return new StudentRequest(
+                data.name(),
+                data.address(),
+                data.homeLatitude(),
+                data.homeLongitude(),
+                data.schoolName(),
+                data.schoolLatitude(),
+                data.schoolLongitude(),
+                data.grade(),
+                data.birthDate(),
+                data.emergencyContact(),
+                data.emergencyPhone(),
+                data.medicalInfo(),
+                data.photoUrl(),
+                data.studentCode()
+        );
     }
 
     private boolean booleanOrDefault(Boolean value, boolean defaultValue) {
         return value != null ? value : defaultValue;
     }
-
-    private StudentGuardianResponse toResponse(StudentGuardianEntity relation, StudentResponse student) {
-        return new StudentGuardianResponse(
-                relation.getId(),
-                student.id(),
-                student.name(),
-                relation.getGuardianId(),
-                null,
-                relation.getRelationship(),
-                relation.getIsEmergencyContact(),
-                relation.getNotifyEvents(),
-                relation.getCreatedAt()
-        );
-    }
 }
-
-/**
- * Request record que contiene guardianId + datos del estudiante.
- */
-record CreateGuardianStudentRequest(UUID guardianId, GuardianStudentData studentData) {}
-
-/**
- * Datos del estudiante para crear/actualizar.
- */
-record GuardianStudentData(
-    String name,
-    String address,
-    Double homeLatitude,
-    Double homeLongitude,
-    String schoolName,
-    Double schoolLatitude,
-    Double schoolLongitude,
-    String grade,
-    java.time.LocalDate birthDate,
-    String emergencyContact,
-    String emergencyPhone,
-    String medicalInfo,
-    String photoUrl,
-    String studentCode,
-    com.saferoute.common.entity.StudentGuardianEntity.Relationship relationship,
-    Boolean isEmergencyContact,
-    Boolean notifyEvents
-) {}

@@ -3,6 +3,7 @@ package com.saferoute.guardian.usecase;
 import com.saferoute.common.entity.StudentGuardianEntity;
 import com.saferoute.common.repository.StudentGuardianRepository;
 import com.saferoute.common.repository.StudentRepository;
+import com.saferoute.common.usecase.UseCaseAdvance;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,40 +17,33 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class DeleteGuardianStudentUseCase extends UseCaseAdvance<DeleteGuardianStudentRequest, Void> {
+public class DeleteGuardianStudentUseCase extends UseCaseAdvance<UUID, Void> {
 
     private final StudentGuardianRepository studentGuardianRepository;
     private final StudentRepository studentRepository;
     private final VerifyGuardianOwnershipUseCase verifyOwnershipUseCase;
 
-    @Override
-    protected Void core(DeleteGuardianStudentRequest request) {
-        // 1. Verificar ownership del guardian
-        verifyOwnershipUseCase.execute(request.guardianId());
+    public void executeWithIds(UUID guardianId, UUID studentId) {
+        verifyOwnershipUseCase.execute(guardianId);
 
-        // 2. Verificar que el estudiante pertenece a este guardian
         StudentGuardianEntity relation = studentGuardianRepository
-                .findByStudentIdAndGuardianId(request.studentId(), request.guardianId())
+                .findByStudentIdAndGuardianId(studentId, guardianId)
                 .orElseThrow(() -> new IllegalArgumentException("El estudiante no pertenece a este guardian"));
 
-        // 3. Verificar que no esté en rutas activas (implementar según modelo)
-        // Por ahora solo eliminos la relación
-
-        // 4. Eliminar relación
         studentGuardianRepository.delete(relation);
 
-        // 5. Eliminar estudiante solo si no tiene más guardianes
-        List<StudentGuardianEntity> remainingRelations = studentGuardianRepository.findByStudentId(request.studentId());
+        List<StudentGuardianEntity> remainingRelations = studentGuardianRepository.findByStudentId(studentId);
         if (remainingRelations.isEmpty()) {
-            studentRepository.deleteById(request.studentId());
-            log.info("Deleted student {} (no more guardians)", request.studentId());
+            studentRepository.deleteById(studentId);
+            log.info("Deleted student {} (no more guardians)", studentId);
         } else {
             log.info("Removed student {} from guardian {}, still has {} guardians",
-                    request.studentId(), request.guardianId(), remainingRelations.size());
+                    studentId, guardianId, remainingRelations.size());
         }
+    }
 
-        return null;
+    @Override
+    protected Void core(UUID id) {
+        throw new UnsupportedOperationException("Use executeWithIds instead");
     }
 }
-
-record DeleteGuardianStudentRequest(UUID guardianId, UUID studentId) {}

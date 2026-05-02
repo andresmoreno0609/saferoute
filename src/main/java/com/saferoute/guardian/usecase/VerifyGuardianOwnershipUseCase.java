@@ -37,7 +37,7 @@ public class VerifyGuardianOwnershipUseCase extends UseCaseAdvance<UUID, Guardia
                 .orElseThrow(() -> new IllegalStateException("Usuario no encontrado"));
 
         // 3. Si es ADMIN, permitir todo
-        if (user.getRoles().stream().anyMatch(r -> r.name() == UserEntity.Role.ADMIN)) {
+        if (user.getRoles().stream().anyMatch(r -> r == UserEntity.UserRole.ADMIN)) {
             return guardianRepository.findById(guardianId)
                     .orElseThrow(() -> new IllegalArgumentException("Guardian no encontrado: " + guardianId));
         }
