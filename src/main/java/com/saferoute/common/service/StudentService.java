@@ -6,9 +6,6 @@ import com.saferoute.common.entity.StudentEntity;
 import com.saferoute.common.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,7 +21,6 @@ import java.util.UUID;
 public class StudentService {
 
     private final StudentRepository studentRepository;
-    private final GeometryFactory geometryFactory = new GeometryFactory(new org.locationtech.jts.geom.PrecisionModel(), 4326);
 
     public List<StudentResponse> findAll() {
         return studentRepository.findAll().stream()
@@ -39,22 +35,14 @@ public class StudentService {
     }
 
     public StudentResponse create(StudentRequest request) {
-        Point homeLocation = null;
-        if (request.homeLatitude() != null && request.homeLongitude() != null) {
-            homeLocation = createPoint(request.homeLongitude(), request.homeLatitude());
-        }
-        
-        Point schoolLocation = null;
-        if (request.schoolLatitude() != null && request.schoolLongitude() != null) {
-            schoolLocation = createPoint(request.schoolLongitude(), request.schoolLatitude());
-        }
-
         StudentEntity entity = StudentEntity.builder()
                 .name(request.name())
                 .address(request.address())
-                .location(homeLocation)
+                .homeLatitude(request.homeLatitude())
+                .homeLongitude(request.homeLongitude())
                 .schoolName(request.schoolName())
-                .schoolLocation(schoolLocation)
+                .schoolLatitude(request.schoolLatitude())
+                .schoolLongitude(request.schoolLongitude())
                 .grade(request.grade())
                 .birthDate(request.birthDate())
                 .emergencyContact(request.emergencyContact())
@@ -79,14 +67,20 @@ public class StudentService {
         if (request.address() != null) {
             entity.setAddress(request.address());
         }
-        if (request.homeLatitude() != null && request.homeLongitude() != null) {
-            entity.setLocation(createPoint(request.homeLongitude(), request.homeLatitude()));
+        if (request.homeLatitude() != null) {
+            entity.setHomeLatitude(request.homeLatitude());
+        }
+        if (request.homeLongitude() != null) {
+            entity.setHomeLongitude(request.homeLongitude());
         }
         if (request.schoolName() != null) {
             entity.setSchoolName(request.schoolName());
         }
-        if (request.schoolLatitude() != null && request.schoolLongitude() != null) {
-            entity.setSchoolLocation(createPoint(request.schoolLongitude(), request.schoolLatitude()));
+        if (request.schoolLatitude() != null) {
+            entity.setSchoolLatitude(request.schoolLatitude());
+        }
+        if (request.schoolLongitude() != null) {
+            entity.setSchoolLongitude(request.schoolLongitude());
         }
         if (request.grade() != null) {
             entity.setGrade(request.grade());
@@ -116,26 +110,11 @@ public class StudentService {
     }
 
     public void delete(UUID id) {
-        StudentEntity entity = studentRepository.findById(id)
-                .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
-        studentRepository.delete(entity);
+        if (!studentRepository.existsById(id)) {
+            throw new StudentNotFoundException("Student not found with id: " + id);
+        }
+        studentRepository.deleteById(id);
         log.info("Student deleted: {}", id);
-    }
-
-    public boolean existsById(UUID id) {
-        return studentRepository.existsById(id);
-    }
-
-    private Point createPoint(Double longitude, Double latitude) {
-        return geometryFactory.createPoint(new Coordinate(longitude, latitude));
-    }
-
-    private Double getLatitude(Point point) {
-        return point != null ? point.getY() : null;
-    }
-
-    private Double getLongitude(Point point) {
-        return point != null ? point.getX() : null;
     }
 
     private StudentResponse toResponse(StudentEntity entity) {
@@ -143,11 +122,11 @@ public class StudentService {
                 .id(entity.getId())
                 .name(entity.getName())
                 .address(entity.getAddress())
-                .homeLatitude(getLatitude(entity.getLocation()))
-                .homeLongitude(getLongitude(entity.getLocation()))
+                .homeLatitude(entity.getHomeLatitude())
+                .homeLongitude(entity.getHomeLongitude())
                 .schoolName(entity.getSchoolName())
-                .schoolLatitude(getLatitude(entity.getSchoolLocation()))
-                .schoolLongitude(getLongitude(entity.getSchoolLocation()))
+                .schoolLatitude(entity.getSchoolLatitude())
+                .schoolLongitude(entity.getSchoolLongitude())
                 .addressGeocoded(entity.getAddressGeocoded())
                 .birthDate(entity.getBirthDate())
                 .grade(entity.getGrade())

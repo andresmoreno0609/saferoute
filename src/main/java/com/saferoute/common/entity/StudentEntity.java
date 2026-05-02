@@ -1,10 +1,7 @@
 package com.saferoute.common.entity;
 
-import com.saferoute.common.config.PointAttributeConverter;
 import jakarta.persistence.*;
 import lombok.*;
-
-import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,14 +26,20 @@ public class StudentEntity {
     @Column(nullable = false, length = 500)
     private String address;
 
-    @Column(nullable = false, columnDefinition = "GEOGRAPHY(POINT,4326)")
-    private Point location;
+    @Column(name = "home_latitude", nullable = false)
+    private Double homeLatitude;
+
+    @Column(name = "home_longitude", nullable = false)
+    private Double homeLongitude;
 
     @Column(name = "school_name", length = 255)
     private String schoolName;
 
-    @Column(name = "school_location", columnDefinition = "GEOGRAPHY(POINT,4326)")
-    private Point schoolLocation;
+    @Column(name = "school_latitude")
+    private Double schoolLatitude;
+
+    @Column(name = "school_longitude")
+    private Double schoolLongitude;
 
     @Column(name = "address_geocoded")
     @Builder.Default
