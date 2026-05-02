@@ -39,7 +39,10 @@ public class StudentService {
     }
 
     public StudentResponse create(StudentRequest request) {
-        Point homeLocation = createPoint(request.homeLongitude(), request.homeLatitude());
+        Point homeLocation = null;
+        if (request.homeLatitude() != null && request.homeLongitude() != null) {
+            homeLocation = createPoint(request.homeLongitude(), request.homeLatitude());
+        }
         
         Point schoolLocation = null;
         if (request.schoolLatitude() != null && request.schoolLongitude() != null) {
