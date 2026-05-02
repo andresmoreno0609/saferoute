@@ -29,15 +29,13 @@ public class StudentEntity {
     @Column(nullable = false, length = 500)
     private String address;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    @Convert(converter = PointAttributeConverter.class)
+    @Column(nullable = false, columnDefinition = "GEOGRAPHY(POINT,4326)")
     private Point location;
 
     @Column(name = "school_name", length = 255)
     private String schoolName;
 
-    @Column(name = "school_location", columnDefinition = "TEXT")
-    @Convert(converter = PointAttributeConverter.class)
+    @Column(name = "school_location", columnDefinition = "GEOGRAPHY(POINT,4326)")
     private Point schoolLocation;
 
     @Column(name = "address_geocoded")
