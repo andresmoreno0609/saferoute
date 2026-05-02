@@ -1,5 +1,6 @@
 package com.saferoute.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,7 +44,22 @@ public class StudentGuardianEntity {
     private LocalDateTime createdAt;
 
     public enum Relationship {
-        father, mother, guardian, other
+        father, mother, guardian, other;
+
+        @JsonCreator
+        public static Relationship fromValue(String value) {
+            if (value == null || value.isBlank()) {
+                return null;
+            }
+            String normalized = value.trim().toLowerCase();
+            return switch (normalized) {
+                case "padre", "father" -> father;
+                case "madre", "mother" -> mother;
+                case "acudiente", "guardian" -> guardian;
+                case "otro", "other" -> other;
+                default -> Relationship.valueOf(normalized);
+            };
+        }
     }
 
     @PrePersist
