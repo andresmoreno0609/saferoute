@@ -1,5 +1,6 @@
 package com.saferoute.common.entity;
 
+import com.saferoute.common.config.PointAttributeConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,13 +29,15 @@ public class StudentEntity {
     @Column(nullable = false, length = 500)
     private String address;
 
-    @Column(nullable = false, columnDefinition = "GEOGRAPHY(POINT,4326)")
+    @Column(nullable = false, columnDefinition = "TEXT")
+    @Convert(converter = PointAttributeConverter.class)
     private Point location;
 
     @Column(name = "school_name", length = 255)
     private String schoolName;
 
-    @Column(name = "school_location", columnDefinition = "GEOGRAPHY(POINT,4326)")
+    @Column(name = "school_location", columnDefinition = "TEXT")
+    @Convert(converter = PointAttributeConverter.class)
     private Point schoolLocation;
 
     @Column(name = "address_geocoded")
