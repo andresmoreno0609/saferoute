@@ -2,7 +2,10 @@ package com.saferoute.guardian.controller;
 
 import com.saferoute.common.dto.guardian.GuardianRequest;
 import com.saferoute.common.dto.guardian.GuardianResponse;
+import com.saferoute.common.dto.studentguardian.StudentGuardianResponse;
 import com.saferoute.guardian.adapter.GuardianAdapter;
+import com.saferoute.guardian.dto.GuardianStudentRequest;
+import com.saferoute.guardian.service.GuardianStudentService;
 import com.saferoute.guardian.usecase.BecomeGuardianFromUserUseCase;
 import com.saferoute.guardian.usecase.BecomeGuardianFromUserRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +34,7 @@ import java.util.UUID;
 public class GuardianController {
 
     private final GuardianAdapter guardianAdapter;
+    private final GuardianStudentService guardianStudentService;
     private final BecomeGuardianFromUserUseCase becomeGuardianFromUserUseCase;
 
     /**
@@ -148,7 +152,7 @@ public class GuardianController {
      */
     public record FcmTokenRequest(String token) {}
 
-    /**
+/**
      * GET /api/v1/guardians/user/{userId}
      * Obtiene un acudiente por el ID del usuario.
      */
@@ -161,5 +165,67 @@ public class GuardianController {
         return ResponseEntity.ok(guardian);
     }
 
+    // ========== Gestión de hijos por el propio guardian ==========
+
     /**
-     }
+     * POST /api/v1/guardians/{guardianId}/students
+     * Crea un estudiante y lo vincula al guardian automáticamente.
+     */
+    @Operation(summary = "Crear hijo", description = "Crea un estudiante y lo vincula al guardian.")
+    @PostMapping("/{guardianId}/students")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
+    public ResponseEntity<StudentGuardianResponse> createStudent(
+            @PathVariable UUID guardianId,
+            @Valid @RequestBody GuardianStudentRequest request) {
+        log.info("POST /api/v1/guardians/{}/students - Creating student for guardian", guardianId);
+        StudentGuardianResponse response = guardianStudentService.createStudentForGuardian(guardianId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * PUT /api/v1/guardians/{guardianId}/students/{studentId}
+     * Actualiza un estudiante verificando que pertenezca al guardian.
+     */
+    @Operation(summary = "Actualizar hijo", description = "Actualiza los datos de un estudiante del guardian.")
+    @PutMapping("/{guardianId}/students/{studentId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
+    public ResponseEntity<StudentGuardianResponse> updateStudent(
+            @PathVariable UUID guardianId,
+            @PathVariable UUID studentId,
+            @Valid @RequestBody GuardianStudentRequest request) {
+        log.info("PUT /api/v1/guardians/{}/students/{} - Updating student", guardianId, studentId);
+        StudentGuardianResponse response = guardianStudentService.updateStudentForGuardian(guardianId, studentId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * DELETE /api/v1/guardians/{guardianId}/students/{studentId}
+     * Elimina un estudiante verificando que no esté en rutas activas.
+     */
+    @Operation(summary = "Eliminar hijo", description = "Elimina un estudiante. Verifica que no esté asignado a rutas.")
+    @DeleteMapping("/{guardianId}/students/{studentId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
+    public ResponseEntity<Void> deleteStudent(
+            @PathVariable UUID guardianId,
+            @PathVariable UUID studentId) {
+        log.info("DELETE /api/v1/guardians/{}/students/{} - Deleting student", guardianId, studentId);
+        guardianStudentService.deleteStudentForGuardian(guardianId, studentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * GET /api/v1/guardians/{guardianId}/students
+     * Lista todos los hijos de un guardian.
+     */
+    @Operation(summary = "Listar hijos", description = "Retorna la lista de estudiantes vinculados al guardian.")
+    @GetMapping("/{guardianId}/students")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
+    public ResponseEntity<List<StudentGuardianResponse>> getStudents(
+            @PathVariable UUID guardianId) {
+        log.info("GET /api/v1/guardians/{}/students - Listing students", guardianId);
+        List<StudentGuardianResponse> students = guardianStudentService.getStudentsByGuardian(guardianId);
+        return ResponseEntity.ok(students);
+    }
+
+    /**
+      }
