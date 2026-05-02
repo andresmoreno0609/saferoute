@@ -60,9 +60,9 @@ public class StudentController {
      * POST /api/v1/students
      * Crea un nuevo estudiante en el sistema.
      */
-    @Operation(summary = "Crear estudiante", description = "Registra un nuevo estudiante. ADMIN y DRIVER.")
+    @Operation(summary = "Crear estudiante", description = "Registra un nuevo estudiante. ADMIN y GUARDIAN.")
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<StudentResponse> create(@Valid @RequestBody StudentRequest request) {
         log.info("POST /api/v1/students - Creating new student");
         StudentResponse student = studentAdapter.create(request);
@@ -73,9 +73,9 @@ public class StudentController {
      * PUT /api/v1/students/{id}
      * Actualiza los datos de un estudiante existente.
      */
-    @Operation(summary = "Actualizar estudiante", description = "Actualiza los datos de un estudiante existente. ADMIN y DRIVER.")
+    @Operation(summary = "Actualizar estudiante", description = "Actualiza los datos de un estudiante existente. ADMIN y GUARDIAN.")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
     public ResponseEntity<StudentResponse> update(
             @PathVariable UUID id,
             @Valid @RequestBody StudentRequest request) {
