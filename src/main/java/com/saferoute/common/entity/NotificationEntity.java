@@ -46,7 +46,12 @@ public class NotificationEntity {
     private String fcmMessageId;
 
     public enum NotificationType {
-        BOARD, ARRIVAL, DROP, OBSERVATION
+        BOARD,       // Subida al bus → Verde
+        ARRIVAL,     // Llegada al colegio → Verde
+        DROP,        // Bajada del bus → Verde
+        OBSERVATION, // Observación → Amarillo
+        ERROR,       // Error/Incidente → Rojo
+        WARNING      // Advertencia → Amarillo/Naranja
     }
 
     @PrePersist
