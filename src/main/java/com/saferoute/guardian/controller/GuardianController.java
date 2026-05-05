@@ -227,4 +227,19 @@ public class GuardianController {
         return ResponseEntity.ok(students);
     }
 
+    /**
+     * GET /api/v1/guardians/{guardianId}/students/{studentId}
+     * Obtiene un estudiante específico verificando que pertenezca al guardian.
+     */
+    @Operation(summary = "Obtener hijo", description = "Retorna los datos de un estudiante específico del guardian.")
+    @GetMapping("/{guardianId}/students/{studentId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUARDIAN')")
+    public ResponseEntity<StudentGuardianResponse> getStudent(
+            @PathVariable UUID guardianId,
+            @PathVariable UUID studentId) {
+        log.info("GET /api/v1/guardians/{}/students/{} - Getting student", guardianId, studentId);
+        StudentGuardianResponse student = guardianStudentService.getStudentForGuardian(guardianId, studentId);
+        return ResponseEntity.ok(student);
+    }
+
 }

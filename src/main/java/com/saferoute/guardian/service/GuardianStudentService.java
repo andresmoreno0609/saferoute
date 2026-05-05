@@ -4,6 +4,7 @@ import com.saferoute.common.dto.studentguardian.StudentGuardianResponse;
 import com.saferoute.guardian.dto.GuardianStudentData;
 import com.saferoute.guardian.usecase.CreateGuardianStudentUseCase;
 import com.saferoute.guardian.usecase.DeleteGuardianStudentUseCase;
+import com.saferoute.guardian.usecase.GetGuardianStudentUseCase;
 import com.saferoute.guardian.usecase.GetGuardianStudentsUseCase;
 import com.saferoute.guardian.usecase.UpdateGuardianStudentUseCase;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class GuardianStudentService {
     private final UpdateGuardianStudentUseCase updateUseCase;
     private final DeleteGuardianStudentUseCase deleteUseCase;
     private final GetGuardianStudentsUseCase getAllUseCase;
+    private final GetGuardianStudentUseCase getStudentUseCase;
 
     public StudentGuardianResponse createStudentForGuardian(UUID guardianId, GuardianStudentData data) {
         return createUseCase.executeWithGuardianId(guardianId, data);
@@ -40,5 +42,9 @@ public class GuardianStudentService {
 
     public List<StudentGuardianResponse> getStudentsByGuardian(UUID guardianId) {
         return getAllUseCase.executeForGuardian(guardianId);
+    }
+
+    public StudentGuardianResponse getStudentForGuardian(UUID guardianId, UUID studentId) {
+        return getStudentUseCase.executeWithIds(guardianId, studentId);
     }
 }
