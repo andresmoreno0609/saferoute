@@ -6,13 +6,16 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface DriverDocumentRepository extends JpaRepository<DriverDocumentEntity, UUID>, JpaSpecificationExecutor<DriverDocumentEntity> {
-    
+
+    long countByEndDateBetween(LocalDate start, LocalDate end);
+
     List<DriverDocumentEntity> findByDriverId(UUID driverId);
     
     List<DriverDocumentEntity> findByDriverIdAndIsActiveTrue(UUID driverId);

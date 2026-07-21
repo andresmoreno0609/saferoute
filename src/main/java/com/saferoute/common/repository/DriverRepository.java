@@ -18,4 +18,6 @@ public interface DriverRepository extends JpaRepository<DriverEntity, UUID>, Jpa
     boolean existsByVehicle_Id(UUID vehicleId);
     
     boolean existsByUserId(UUID userId);
+
+    long countByInfoValidate(Boolean infoValidate);
 }

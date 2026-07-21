@@ -17,6 +17,8 @@ public interface RouteRepository extends JpaRepository<RouteEntity, UUID>, JpaSp
     List<RouteEntity> findByDriverId(UUID driverId);
     
     List<RouteEntity> findByStatus(RouteStatus status);
+
+    long countByStatus(RouteStatus status);
     
     List<RouteEntity> findByScheduledDate(LocalDate scheduledDate);
     
